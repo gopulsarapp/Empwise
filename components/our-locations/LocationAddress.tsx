@@ -87,15 +87,6 @@ const LOCATIONS: Location[] = [
       "Sales: sales@integrisit.com",
     ],
   },
-  {
-    title: "Florida",
-    lines: [
-      "Client support: (877) 468-4771",
-      "Support: support@integrisit.com",
-      "Sales: (888) 330-8808",
-      "Sales: sales@integrisit.com",
-    ],
-  },
 ]
 
 /* ================= Animations ================= */

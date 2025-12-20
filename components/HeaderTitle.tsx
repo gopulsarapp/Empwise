@@ -13,7 +13,8 @@ import { cn } from "@/lib/utils"
 
 export interface HeaderData {
   title: string
-  subtitles: string
+  subtitles?: string
+  desc?: string
   imageUrl: string
   buttonName?: string
   buttonUrl?: string
@@ -115,6 +116,16 @@ export default function HeaderTitle({ data }: { data: HeaderData }) {
             >
               {data.subtitles}
             </motion.p>
+
+            {/* ✅ Description — ONLY IF PRESENT */}
+            {data.desc && (
+              <motion.p
+                variants={itemVariants}
+                className="max-w-2xl text-base md:text-lg text-slate-300"
+              >
+                {data.desc}
+              </motion.p>
+            )}
 
             {/* Button — ONLY IF buttonName exists */}
             {data.buttonName && (
