@@ -96,7 +96,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Navbar />
-        <main className="flex-1 m-20" style={{ marginTop: "110px" }}>
+        <main className="flex-1" style={{ marginTop: "110px" }}>
           {children}
         </main>
 
