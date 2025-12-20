@@ -12,8 +12,7 @@ import Testimonials from "@/components/sections/Testimonials";
 
 export default function HomePage() {
   return (
-  
-    <div className="mt-200">
+    <>
       <HeroSection />
       <IndustryRecognition />
       <ITPartnerAssessment />
@@ -23,6 +22,6 @@ export default function HomePage() {
       <IntegrisExperience />
       <Testimonials />
       <DiscoverySection />
-      </div>
+    </>
   )
 }
