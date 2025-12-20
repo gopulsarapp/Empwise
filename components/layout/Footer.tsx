@@ -1,18 +1,19 @@
 "use client"
 
 import Link from "next/link"
-import { motion } from "framer-motion"
+import { motion, type Variants } from "framer-motion"
 import { Facebook, Linkedin, Youtube } from "lucide-react"
 
-// Animation variants
-const footerVariants = {
+/* ================= ANIMATION ================= */
+
+const footerVariants: Variants = {
   hidden: {
     opacity: 0,
-    y: -40,
+    y: -60, // start above
   },
   visible: {
     opacity: 1,
-    y: 0,
+    y: 0, // move down into place
     transition: {
       duration: 0.8,
       ease: "easeOut",
@@ -21,10 +22,22 @@ const footerVariants = {
   },
 }
 
-const itemVariants = {
-  hidden: { opacity: 0, y: -20 },
-  visible: { opacity: 1, y: 0 },
+const itemVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    y: -30, // each item starts higher
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: "easeOut",
+    },
+  },
 }
+
+/* ================= COMPONENT ================= */
 
 export default function Footer() {
   return (
@@ -82,12 +95,9 @@ export default function Footer() {
       </div>
 
       {/* BOTTOM BAR */}
-      <motion.div
-        variants={itemVariants}
-        className="border-t border-white/10"
-      >
+      <motion.div variants={itemVariants} className="border-t border-white/10">
         <div className="mx-auto max-w-[1440px] px-6 py-6 text-sm text-white/80">
-          ©2025 Integris
+          © {new Date().getFullYear()} Integris
         </div>
       </motion.div>
     </motion.footer>

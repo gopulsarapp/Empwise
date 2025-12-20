@@ -6,24 +6,23 @@ import IndustryExpertise from "@/components/sections/IndustryExpertise";
 import IndustryRecognition from "@/components/sections/IndustryRecognition";
 import IntegrisExperience from "@/components/sections/IntegrisExperience";
 import ITPartnerAssessment from "@/components/sections/ITPartnerAssessment";
-import MeetIntegris from "@/components/sections/MeetIntegris";
 import Testimonials from "@/components/sections/Testimonials";
+
 
 
 export default function HomePage() {
   return (
-    <>
-
+  
+    <div className="mt-200">
       <HeroSection />
       <IndustryRecognition />
       <ITPartnerAssessment />
-      <MeetIntegris/>
       <IndustryExpertise />
       <EnterpriseResources />
       <ClientRating />
-      <IntegrisExperience/>
-      <Testimonials/>
-      <DiscoverySection/>
-    </>
+      <IntegrisExperience />
+      <Testimonials />
+      <DiscoverySection />
+      </div>
   )
 }

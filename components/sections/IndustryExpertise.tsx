@@ -2,29 +2,57 @@
 
 import Image from "next/image"
 import { motion, type Variants } from "framer-motion"
+import axios from "axios"
+import { useEffect, useState } from "react"
 
-const industries = [
-  {
-    title: "Community Banks",
-    image:
-      "https://integrisit.com/wp-content/uploads/bb-plugin/cache/HomeComBanks75975609-panorama-ee3689f6d7446127e758e0b25a2e0a95-932601jolw78.jpg",
-  },
-  {
-    title: "Legal",
-    image:
-      "https://integrisit.com/wp-content/uploads/bb-plugin/cache/Screenshot-2025-06-10-at-4.17.35%E2%80%AFPM-panorama-729b625f495bf498981c18ddad3950b8-dsmj1qap6h4y.png",
-  },
-  {
-    title: "Manufacturing",
-    image:
-      "https://integrisit.com/wp-content/uploads/bb-plugin/cache/Home-Manufacturers1366345471-panorama-3449211df64b9fa3a0e21d9c7f09e1d9-nqe6g3idkr7c.jpg",
-  },
-  {
-    title: "Highly Regulated Industries",
-    image:
-      "https://integrisit.com/wp-content/uploads/bb-plugin/cache/gettyimages-2194012901-170667a-panorama-e5d857d8fa1321c9ea5186948ea14cbe-i4m8fvy72s0d.jpg",
-  },
-]
+/* =======================
+   Types (Contentful)
+======================= */
+
+type Industry = {
+  title: string
+  image: string
+}
+
+type ContentfulImageLink = {
+  sys: {
+    id: string
+    type: "Link"
+    linkType: "Asset"
+  }
+}
+
+type ContentfulAsset = {
+  sys: {
+    id: string
+  }
+  fields: {
+    title: string
+    file: {
+      url: string
+    }
+  }
+}
+
+type ContentfulEntryFields = {
+  title: string
+  subtitle: string
+  paragraph: string
+  industrySpecificImage: ContentfulImageLink[]
+}
+
+type ContentfulResponse = {
+  items: {
+    fields: ContentfulEntryFields
+  }[]
+  includes?: {
+    Asset?: ContentfulAsset[]
+  }
+}
+
+/* =======================
+   Framer Motion
+======================= */
 
 const containerVariants: Variants = {
   hidden: {},
@@ -40,10 +68,7 @@ const cardVariants: Variants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: {
-      duration: 0.6,
-      ease: "easeOut",
-    },
+    transition: { duration: 0.6, ease: "easeOut" },
   },
 }
 
@@ -52,17 +77,68 @@ const textVariants: Variants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: {
-      duration: 0.6,
-      ease: "easeOut",
-    },
+    transition: { duration: 0.6, ease: "easeOut" },
   },
 }
 
+/* =======================
+   Component
+======================= */
+
 export default function IndustryExpertise() {
+  const [industries, setIndustries] = useState<Industry[]>([])
+  const [title, setTitle] = useState("")
+  const [subtitle, setSubtitle] = useState("")
+  const [paragraph, setParagraph] = useState("")
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await axios.get<ContentfulResponse>(
+          `${process.env.NEXT_PUBLIC_CONTENTFUL_URL}&content_type=industryExpertise`
+        )
+
+        const item = res.data.items[0]
+        const assets: ContentfulAsset[] = res.data.includes?.Asset ?? []
+
+        setTitle(item.fields.title)
+        setSubtitle(item.fields.subtitle)
+        setParagraph(item.fields.paragraph)
+
+        const mappedIndustries: Industry[] =
+          item.fields.industrySpecificImage
+            .map((imgLink: ContentfulImageLink) => {
+              const asset = assets.find(
+                (a) => a.sys.id === imgLink.sys.id
+              )
+
+              if (!asset) return null
+
+              return {
+                title: asset.fields.title,
+                image: `https:${asset.fields.file.url}`,
+              }
+            })
+            .filter((i): i is Industry => i !== null)
+
+        setIndustries(mappedIndustries)
+      } catch (error) {
+        console.error("Contentful fetch error:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [])
+
+  if (loading) return null
+
   return (
     <section className="w-full bg-white py-24">
-      <div className="mx-auto max-w-[1440px] px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+      <div className="mx-auto max-w-[1440px] px-6 grid grid-cols-1 lg:grid-cols-2 gap-16">
+        {/* Text */}
         <motion.div
           variants={textVariants}
           initial="hidden"
@@ -70,21 +146,19 @@ export default function IndustryExpertise() {
           viewport={{ once: true, amount: 0.4 }}
         >
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Deep industry-specific expertise
+            {title}
           </h2>
 
-          <p className="text-lg mb-8 max-w-md">
-            Our industry focus helps your organization work better and stay in
-            compliance.
+          <p className="text-lg mb-6 max-w-md">
+            {subtitle}
           </p>
 
           <p className="text-muted-foreground max-w-md leading-relaxed">
-            With vertically aligned solutions, practices, and resources focused
-            entirely on your industry, we ensure you always comply — and
-            surpass your most demanding customers’ expectations.
+            {paragraph}
           </p>
         </motion.div>
 
+        {/* Cards */}
         <motion.div
           className="grid grid-cols-1 sm:grid-cols-2 gap-8"
           variants={containerVariants}

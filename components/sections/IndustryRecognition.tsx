@@ -4,35 +4,56 @@ import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import clsx from "clsx"
 import { motion, type Variants } from "framer-motion"
+import axios from "axios"
 
 const ITEM_WIDTH = 220
 
-const logos = [
-  {
-    src: "https://integrisit.com/wp-content/uploads/2025/06/Screenshot-2025-06-24-at-9.43.17%E2%80%AFAM.png",
-    alt: "Google Reviews",
-  },
-  {
-    src: "https://integrisit.com/wp-content/uploads/2025/06/Screenshot-2025-06-24-at-9.43.11%E2%80%AFAM.png",
-    alt: "Inc 5000",
-  },
-  {
-    src: "https://integrisit.com/wp-content/uploads/2025/06/2025_MSP_501_Winner_Logo_white.png",
-    alt: "MSP 501",
-  },
-  {
-    src: "https://integrisit.com/wp-content/uploads/2025/06/crn-vertical-2025.png",
-    alt: "CRN 500",
-  },
-  {
-    src: "https://integrisit.com/wp-content/uploads/2025/06/clutch-icon.png",
-    alt: "Clutch",
-  },
-  {
-    src: "https://integrisit.com/wp-content/uploads/2025/06/glassdoor.png",
-    alt: "Glassdoor",
-  },
-]
+/* -------------------------------------------------------------------------- */
+/*                                   Types                                    */
+/* -------------------------------------------------------------------------- */
+
+type Logo = {
+  src: string
+  alt: string
+}
+
+type ContentfulSys = {
+  id: string
+}
+
+type ContentfulAsset = {
+  sys: ContentfulSys
+  fields: {
+    title: string
+    file: {
+      url: string
+    }
+  }
+}
+
+type ContentfulImageLink = {
+  sys: ContentfulSys
+}
+
+type IndustryRecognitionFields = {
+  title: string
+  image: ContentfulImageLink[]
+}
+
+type ContentfulItem<T> = {
+  fields: T
+}
+
+type ContentfulResponse = {
+  items: ContentfulItem<IndustryRecognitionFields>[]
+  includes?: {
+    Asset?: ContentfulAsset[]
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/*                              Framer Variants                               */
+/* -------------------------------------------------------------------------- */
 
 const containerVariants: Variants = {
   hidden: { opacity: 0, y: 40 },
@@ -59,13 +80,65 @@ const itemVariants: Variants = {
   },
 }
 
+/* -------------------------------------------------------------------------- */
+/*                               Component                                    */
+/* -------------------------------------------------------------------------- */
+
 export default function IndustryRecognition() {
   const scrollRef = useRef<HTMLDivElement>(null)
-  const [active, setActive] = useState(0)
 
+  const [title, setTitle] = useState<string>("")
+  const [logos, setLogos] = useState<Logo[]>([])
+  const [active, setActive] = useState<number>(0)
+  const [loading, setLoading] = useState<boolean>(true)
+
+  /* ------------------------------ Fetch Data ------------------------------ */
   useEffect(() => {
+    async function fetchData(): Promise<void> {
+      try {
+        const res = await axios.get<ContentfulResponse>(
+          `${process.env.NEXT_PUBLIC_CONTENTFUL_URL}&content_type=industryRecognition`
+        )
+
+        const item = res.data.items[0]
+        const assets = res.data.includes?.Asset ?? []
+
+        setTitle(item.fields.title)
+
+        const mappedLogos: Logo[] = item.fields.image
+          .map((img: ContentfulImageLink): Logo | null => {
+            const asset = assets.find(
+              (a: ContentfulAsset) => a.sys.id === img.sys.id
+            )
+
+            if (!asset) return null
+
+            return {
+              src: `https:${asset.fields.file.url}`,
+              alt: asset.fields.title,
+            }
+          })
+          .filter((logo): logo is Logo => logo !== null)
+
+        setLogos(mappedLogos)
+      } catch (error) {
+        console.error("Contentful fetch error:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [])
+
+  /* -------------------------- Auto Scroll (Mobile) ------------------------- */
+  useEffect(() => {
+    if (loading) return
+    if (typeof window === "undefined") return
+    if (!scrollRef.current || logos.length === 0) return
+
     const isMobile = window.matchMedia("(max-width: 767px)").matches
-    if (!isMobile || !scrollRef.current) return
+    if (!isMobile) return
 
     const container = scrollRef.current
 
@@ -81,29 +154,43 @@ export default function IndustryRecognition() {
     }, 3000)
 
     return () => clearInterval(interval)
-  }, [])
+  }, [logos, loading])
 
-  const handleScroll = () => {
+  /* ---------------------------- Scroll Handler ----------------------------- */
+  const handleScroll = (): void => {
     if (!scrollRef.current) return
-    setActive(
-      Math.round(scrollRef.current.scrollLeft / ITEM_WIDTH)
+
+    const index = Math.round(
+      scrollRef.current.scrollLeft / ITEM_WIDTH
+    )
+
+    setActive(Math.min(index, logos.length - 1))
+  }
+
+  /* ------------------------------- Loading -------------------------------- */
+  if (loading) {
+    return (
+      <section className="w-full py-16 bg-[#3a2744] text-white text-center">
+      </section>
     )
   }
 
+  /* -------------------------------- Render -------------------------------- */
   return (
     <motion.section
       className="w-full bg-[#3a2744] text-white py-16 overflow-hidden"
       variants={containerVariants}
       initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.3 }}
+      animate="visible"
     >
-      <motion.h2
-        variants={itemVariants}
-        className="text-center text-xl md:text-2xl font-semibold mb-10 px-6"
-      >
-        Industry recognized, client loved
-      </motion.h2>
+      {title && (
+        <motion.h2
+          variants={itemVariants}
+          className="text-center text-xl md:text-2xl font-semibold mb-10 px-6"
+        >
+          {title}
+        </motion.h2>
+      )}
 
       <motion.div
         ref={scrollRef}
@@ -114,9 +201,9 @@ export default function IndustryRecognition() {
           "snap-x snap-mandatory md:snap-none scrollbar-hide"
         )}
       >
-        {logos.map((logo) => (
+        {logos.map((logo, index) => (
           <motion.div
-            key={logo.alt}
+            key={`${logo.alt}-${index}`}
             variants={itemVariants}
             className="relative min-w-[220px] md:min-w-0 h-[72px] snap-center flex items-center justify-center"
           >
@@ -131,6 +218,7 @@ export default function IndustryRecognition() {
         ))}
       </motion.div>
 
+      {/* Pagination Dots */}
       <div className="mt-8 flex justify-center gap-2 md:hidden">
         {logos.map((_, i) => (
           <motion.span
