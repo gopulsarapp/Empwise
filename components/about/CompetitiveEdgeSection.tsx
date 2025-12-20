@@ -75,7 +75,7 @@ export default function CompetitiveEdgeSection() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="flex flex-row sm:flex-col gap-6 sm:gap-10 items-start"
+              className="flex flex-col sm:flex-row gap-6 sm:gap-10 items-start"
             >
               {/* ICON */}
               <div className="flex-shrink-0">

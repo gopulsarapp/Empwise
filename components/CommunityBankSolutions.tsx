@@ -15,7 +15,7 @@ export default function CommunityBankSolutions() {
   return (
     <section className="w-full bg-background py-28">
       <div className="mx-auto max-w-[1440px] px-6">
-        <div className="flex flex-row lg:flex-col gap-16 items-start">
+        <div className="flex flex-col lg:flex-row gap-16 items-start">
 
           {/* LEFT: IMAGE */}
           <motion.div
