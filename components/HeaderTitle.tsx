@@ -6,7 +6,18 @@ import {
   type Transition,
 } from "framer-motion"
 import { useEffect, useState } from "react"
+import Link from "next/link"
 import { cn } from "@/lib/utils"
+
+/* ------------------ Types ------------------ */
+
+export interface HeaderData {
+  title: string
+  subtitles: string
+  imageUrl: string
+  buttonName?: string
+  buttonUrl?: string
+}
 
 /* ------------------ Shared Transition ------------------ */
 
@@ -27,10 +38,7 @@ const containerVariants: Variants = {
 }
 
 const itemVariants: Variants = {
-  hidden: {
-    opacity: 0,
-    y: 24, // text comes from bottom
-  },
+  hidden: { opacity: 0, y: 24 },
   visible: {
     opacity: 1,
     y: 0,
@@ -39,10 +47,7 @@ const itemVariants: Variants = {
 }
 
 const bgVariants: Variants = {
-  hidden: {
-    opacity: 0,
-    y: -40, // background comes from top
-  },
+  hidden: { opacity: 0, y: -40 },
   visible: {
     opacity: 1,
     y: 0,
@@ -52,7 +57,7 @@ const bgVariants: Variants = {
 
 /* ------------------ Component ------------------ */
 
-export default function HeaderTitle() {
+export default function HeaderTitle({ data }: { data: HeaderData }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -62,7 +67,7 @@ export default function HeaderTitle() {
 
   return (
     <section className="relative w-full overflow-hidden">
-      {/* Background */}
+      {/* Background Image */}
       <motion.div
         variants={bgVariants}
         initial="hidden"
@@ -72,11 +77,10 @@ export default function HeaderTitle() {
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage:
-              "url('https://png.pngtree.com/thumb_back/fh260/background/20211031/pngtree-abstract-bg-image_914283.png')",
+            backgroundImage: `url(${data.imageUrl})`,
           }}
         />
-        <div className="absolute inset-0 bg-black/55" />
+        <div className="absolute inset-0 bg-black/60" />
       </motion.div>
 
       {/* Content */}
@@ -93,6 +97,7 @@ export default function HeaderTitle() {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
+            className="space-y-6"
           >
             <motion.h1
               variants={itemVariants}
@@ -101,17 +106,27 @@ export default function HeaderTitle() {
                 "text-4xl md:text-5xl lg:text-6xl"
               )}
             >
-              IT for Highly Regulated
-              <br />
-              Industries
+              {data.title}
             </motion.h1>
 
             <motion.p
               variants={itemVariants}
-              className="mt-6 max-w-xl text-lg md:text-xl text-slate-200"
+              className="max-w-xl text-lg md:text-xl text-slate-200"
             >
-              Built for compliance and powered by strategy
+              {data.subtitles}
             </motion.p>
+
+            {/* Button — ONLY IF buttonName exists */}
+            {data.buttonName && (
+              <motion.div variants={itemVariants}>
+                <Link
+                  href={data.buttonUrl ?? "#"}
+                  className="inline-flex items-center rounded-xl bg-primary px-6 py-3 text-base font-semibold text-white transition hover:bg-primary/90"
+                >
+                  {data.buttonName}
+                </Link>
+              </motion.div>
+            )}
           </motion.div>
         )}
       </div>

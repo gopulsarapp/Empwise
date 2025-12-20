@@ -8,24 +8,10 @@ http://localhost:3000/about/founders/
 http://localhost:3000/about/leadership/
 http://localhost:3000/about/press/
 
-http://localhost:3000/blogs/
-
-http://localhost:3000/industries/highly-regulated-industries/
-http://localhost:3000/industries/community-banks/
-http://localhost:3000/industries/legal
-http://localhost:3000/industries/manufacturing-it-services/
-
 
 http://localhost:3000/our-locations/
 http://localhost:3000/our-partners/
-http://localhost:3000/resources/
 
-
-http://localhost:3000/services/advisory/
-http://localhost:3000/services/cloud/
-http://localhost:3000/services/cybersecurity/
-http://localhost:3000/services/governance/
-http://localhost:3000/services/managed-it/
 
 
 
