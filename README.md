@@ -1,21 +1,3 @@
-
-
-
-http://localhost:3000
-
-http://localhost:3000/about/
-http://localhost:3000/about/founders/
-http://localhost:3000/about/leadership/
-http://localhost:3000/about/press/
-
-
-http://localhost:3000/our-locations/
-http://localhost:3000/our-partners/
-
-
-
-
-
 Update contentful data solution 8 
 
 1. Managed IT Infrastructure
