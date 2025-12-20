@@ -9,23 +9,22 @@ export default function OurStorySection() {
       <div className="mx-auto max-w-[1440px] px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
 
-          {/* LEFT: LOGO / BRAND */}
+          {/* LEFT: FULL WIDTH IMAGE */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, ease: "easeOut" }}
-            className="flex items-center"
+            className="relative w-full h-[220px] sm:h-[280px] lg:h-[320px]"
           >
-            <div className="relative w-[260px] h-[80px]">
-              <Image
-                src="/asset/logo.png"
-                alt="Integris logo"
-                fill
-                className="object-contain"
-                priority
-              />
-            </div>
+            <Image
+              src="/asset/logo.png"
+              alt="Integris logo"
+              fill
+              priority
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-contain"
+            />
           </motion.div>
 
           {/* RIGHT: CONTENT */}
