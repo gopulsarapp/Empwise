@@ -14,7 +14,8 @@ type ExperienceData = {
 }
 
 interface ExperienceProps {
-  order?: "left" | "right"
+  order?: "left" | "right",
+  pageName:string
 }
 
 
@@ -80,7 +81,7 @@ const bgVariants: Variants = {
 /* ------------------ Component ------------------ */
 
 export default function IntegrisExperience({
-  order = "right",
+  order = "right",pageName
 }: ExperienceProps) {
   const [data, setData] = useState<ExperienceData | null>(null)
 
@@ -88,7 +89,7 @@ export default function IntegrisExperience({
     async function fetchExperience() {
       try {
         const res = await axios.get<ContentfulResponse>(
-          `${process.env.NEXT_PUBLIC_CONTENTFUL_URL}&content_type=homeAboutExperience`
+          `${process.env.NEXT_PUBLIC_CONTENTFUL_URL}&content_type=${pageName}`
         )
 
         const entry = res.data.items[0]
@@ -113,7 +114,7 @@ export default function IntegrisExperience({
     }
 
     fetchExperience()
-  }, [])
+  }, [pageName])
 
   if (!data) return null
 

@@ -19,8 +19,8 @@ export default function HomePage() {
       <IndustryExpertise />
       <EnterpriseResources />
       <ClientRating />
-      <IntegrisExperience order="right"/>
-     <Testimonials pageName="home" />
+      <IntegrisExperience order="right" pageName="homeAboutExperience"/>
+      <Testimonials pageName="home" />
       <DiscoverySection />
     </>
   )

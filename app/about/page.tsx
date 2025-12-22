@@ -11,11 +11,11 @@ import IntegrisExperience from "@/components/sections/IntegrisExperience"
 export default function Page() {
     return (
         <>
-            <HeaderTitle pageName="about"/>
+            <HeaderTitle pageName="about" />
             <IndustryRecognition />
 
             <CompetitiveEdgeSection />
-             <IntegrisExperience order="right"/>
+            <IntegrisExperience order="right" pageName="homeAboutExperience" />
             <OurStorySection />
             <OurValuesSection />
 
