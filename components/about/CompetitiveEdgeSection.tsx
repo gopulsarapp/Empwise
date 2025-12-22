@@ -1,52 +1,107 @@
 "use client"
 
+import { useEffect, useState } from "react"
+import axios from "axios"
 import { motion } from "framer-motion"
-import {
-  Binoculars,
-  Globe,
-  Factory,
-  BookOpen,
-} from "lucide-react"
+import Image from "next/image"
+
+/* ---------------- TYPES ---------------- */
+
+interface ContentfulAsset {
+  sys: {
+    id: string
+  }
+  fields: {
+    title: string
+    description: string
+    file: {
+      url: string
+    }
+  }
+}
+
+interface ContentfulEntry {
+  fields: {
+    title: string
+    paragraph: string
+    pillars: {
+      sys: {
+        id: string
+      }
+    }[]
+  }
+}
+
+interface ContentfulResponse {
+  items: ContentfulEntry[]
+  includes?: {
+    Asset?: ContentfulAsset[]
+  }
+}
 
 interface Feature {
   title: string
   description: string
-  icon: React.ReactNode
+  iconUrl: string
 }
 
-const features: Feature[] = [
-  {
-    title: "Future-ready solutions",
-    description:
-      "Integris is an MSP that safeguards you today while preparing you for the future. With our tailored solutions, industry expertise, and visionary approach, we help you manage current IT needs while delivering transformative offerings.",
-    icon: <Binoculars />,
-  },
-  {
-    title: "A world-class customer experience",
-    description:
-      "We are passionate about delivering a seamless, intuitive, and tailored experience, with a personal approach and a model designed for your specific needs.",
-    icon: <Globe />,
-  },
-  {
-    title: "Our industry-specific approach",
-    description:
-      "Integris is aligned by industry, providing practices and resources tailored to legal, financial, manufacturing, healthcare, nonprofit, and more—supported by experts who understand your challenges.",
-    icon: <Factory />,
-  },
-  {
-    title: "Enterprise resources for SMBs",
-    description:
-      "We focus exclusively on SMBs, delivering enterprise-level solutions with the scale, certifications, and expertise required—customized at both the technology and industry level.",
-    icon: <BookOpen />,
-  },
-]
+/* ---------------- COMPONENT ---------------- */
 
 export default function CompetitiveEdgeSection() {
+  const [title, setTitle] = useState("")
+  const [paragraph, setParagraph] = useState("")
+  const [features, setFeatures] = useState<Feature[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchCompetitiveEdge() {
+      try {
+        const res = await axios.get<ContentfulResponse>(
+          `${process.env.NEXT_PUBLIC_CONTENTFUL_URL}&content_type=aboutPageCompetitive`
+        )
+
+        const entry = res.data.items[0]
+        if (!entry) return
+
+        const assets = res.data.includes?.Asset || []
+
+        const mappedFeatures: Feature[] =
+          entry.fields.pillars
+            .map((pillar) => {
+              const asset = assets.find(
+                (a) => a.sys.id === pillar.sys.id
+              )
+
+              if (!asset) return null
+
+              return {
+                title: asset.fields.title,
+                description: asset.fields.description,
+                iconUrl: `https:${asset.fields.file.url}`,
+              }
+            })
+            .filter(Boolean) as Feature[]
+
+        setTitle(entry.fields.title)
+        setParagraph(entry.fields.paragraph)
+        setFeatures(mappedFeatures)
+      } catch (error) {
+        console.error("Contentful fetch error:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchCompetitiveEdge()
+  }, [])
+
+  if (loading) return null
+
   return (
     <section className="w-full bg-background py-24">
       <div className="mx-auto max-w-[1440px] px-6 space-y-16">
 
-        {/* HEADER */}
+        {/* ---------------- HEADER ---------------- */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -55,18 +110,18 @@ export default function CompetitiveEdgeSection() {
           className="max-w-4xl"
         >
           <h2 className="text-4xl md:text-5xl font-bold">
-            Integris provides a{" "}
-            <span className="text-destructive">competitive edge</span>
+            {title.split("competitive edge")[0]}
+            <span className="text-destructive">
+              competitive edge
+            </span>
           </h2>
 
           <p className="mt-4 text-muted-foreground text-lg">
-            We go beyond traditional IT management by building strategic IT
-            roadmaps, optimizing IT operations, strengthening cybersecurity,
-            refining cloud solutions, and ensuring compliance.
+            {paragraph}
           </p>
         </motion.div>
 
-        {/* FEATURES */}
+        {/* ---------------- FEATURES ---------------- */}
         <div className="space-y-16">
           {features.map((feature, index) => (
             <motion.div
@@ -90,13 +145,17 @@ export default function CompetitiveEdgeSection() {
                     md:w-24 md:h-24
                   "
                 >
-                  <span className="
-                    [&>svg]:w-8 [&>svg]:h-8
-                    sm:[&>svg]:w-10 sm:[&>svg]:h-10
-                    md:[&>svg]:w-12 md:[&>svg]:h-12
-                  ">
-                    {feature.icon}
-                  </span>
+                  <Image
+  src={feature.iconUrl}
+  alt={feature.title}
+  width={48}
+  height={48}
+  className="
+    w-8 h-8
+    sm:w-10 sm:h-10
+    md:w-12 md:h-12
+  "
+/>
                 </div>
               </div>
 
