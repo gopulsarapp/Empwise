@@ -6,12 +6,6 @@ import DiscoverySection from "@/components/sections/DiscoverySection";
 import IntegrisExperience from "@/components/sections/IntegrisExperience";
 
 export default function Page() {
-  const headerdata = {
-    title: "Solutions Built for Community Banks",
-    subtitles: "Build your operational maturity with the right IT partner",
-    imageUrl: "https://integrisit.com/wp-content/uploads/2025/07/CommunityBanksHero625756386.jpg",
-  };
-
   return (
     <>
       <HeaderTitle pageName="community-banks" />

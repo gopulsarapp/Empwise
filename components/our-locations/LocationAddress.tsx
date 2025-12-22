@@ -1,93 +1,40 @@
 "use client"
 
+import { useEffect, useState } from "react"
+import axios from "axios"
 import { motion, type Variants } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 
 /* ================= Types ================= */
 
-type Location = {
+type UILocation = {
   title: string
   lines: string[]
 }
 
-/* ================= Data ================= */
+type ContentfulLocation = {
+  city: string
+  state: string
+  address?: string
+  client_support_phone: string
+  support_email: string
+  sales_phone: string
+  sales_email: string
+}
 
-const LOCATIONS: Location[] = [
-  {
-    title: "National numbers",
-    lines: [
-      "Client support: (877) 468-4771",
-      "Support: support@integrisit.com",
-      "Sales: (888) 330-8808",
-      "Sales: sales@integrisit.com",
-    ],
-  },
-  {
-    title: "Atlanta, Georgia",
-    lines: [
-      "3455 Peachtree Road NE",
-      "Suite 325",
-      "Atlanta GA 30326",
-      "Client support: (877) 468-4771",
-      "Support: support@integrisit.com",
-      "Sales: (888) 330-8808",
-      "Sales: sales@integrisit.com",
-    ],
-  },
-  {
-    title: "Cranbury, New Jersey",
-    lines: [
-      "1 Corporate Drive, Unit G",
-      "Cranbury Township, NJ 08512",
-      "Client support: (877) 468-4771",
-      "Support: support@integrisit.com",
-      "Sales: (888) 330-8808",
-      "Sales: sales@integrisit.com",
-    ],
-  },
-  {
-    title: "Dallas, Texas",
-    lines: [
-      "2350 Airport Freeway, Suite 300",
-      "Bedford, TX 76022",
-      "Client support: (877) 468-4771",
-      "Support: support@integrisit.com",
-      "Sales: (888) 330-8808",
-      "Sales: sales@integrisit.com",
-    ],
-  },
-  {
-    title: "Denver, Colorado",
-    lines: [
-      "Client support: (877) 468-4771",
-      "Support: support@integrisit.com",
-      "Sales: (888) 330-8808",
-      "Sales: sales@integrisit.com",
-    ],
-  },
-  {
-    title: "Duluth, Minnesota",
-    lines: [
-      "306 W Michigan Street, Suite #200",
-      "Duluth, MN 55802",
-      "Client support: (877) 468-4771",
-      "Support: support@integrisit.com",
-      "Sales: (888) 330-8808",
-      "Sales: sales@integrisit.com",
-    ],
-  },
-  {
-    title: "Endicott, New York",
-    lines: [
-      "111 Grant Ave, Suite 103",
-      "Endicott, NY 13760",
-      "Client support: (833) 706-2229",
-      "Support: help@techmd.com",
-      "Sales: (888) 330-8808",
-      "Sales: sales@integrisit.com",
-    ],
-  },
-]
+type ContentfulResponse = {
+  items: Array<{
+    fields: {
+      nationalContacts: {
+        client_support_phone: string
+        support_email: string
+        sales_phone: string
+        sales_email: string
+      }
+      locations: ContentfulLocation[]
+    }
+  }>
+}
 
 /* ================= Animations ================= */
 
@@ -101,16 +48,13 @@ const containerVariants: Variants = {
 }
 
 const cardVariants: Variants = {
-  hidden: {
-    opacity: 0,
-    y: 40,
-  },
+  hidden: { opacity: 0, y: 40 },
   show: {
     opacity: 1,
     y: 0,
     transition: {
       duration: 0.6,
-      ease: [0.16, 1, 0.3, 1], // ✅ Type-safe easeOut
+      ease: [0.16, 1, 0.3, 1],
     },
   },
 }
@@ -118,6 +62,54 @@ const cardVariants: Variants = {
 /* ================= Component ================= */
 
 export default function LocationAddress() {
+  const [locations, setLocations] = useState<UILocation[]>([])
+
+  useEffect(() => {
+    async function fetchLocations() {
+      try {
+        const res = await axios.get<ContentfulResponse>(
+          `${process.env.NEXT_PUBLIC_CONTENTFUL_URL}&content_type=ourLocation`
+        )
+
+        const entry = res.data.items[0]
+        if (!entry) return
+
+        const { nationalContacts, locations } = entry.fields
+
+        const uiLocations: UILocation[] = [
+          {
+            title: "National numbers",
+            lines: [
+              `Client support: ${nationalContacts.client_support_phone}`,
+              `Support: ${nationalContacts.support_email}`,
+              `Sales: ${nationalContacts.sales_phone}`,
+              `Sales: ${nationalContacts.sales_email}`,
+            ],
+          },
+          ...locations.map((loc) => ({
+            title: `${loc.city}, ${loc.state}`,
+            lines: [
+              ...(loc.address ? loc.address.split(", ") : []),
+              `Client support: ${loc.client_support_phone}`,
+              `Support: ${loc.support_email}`,
+              `Sales: ${loc.sales_phone}`,
+              `Sales: ${loc.sales_email}`,
+            ],
+          })),
+        ]
+
+        setLocations(uiLocations)
+      } catch (error) {
+        console.error("Location fetch error:", error)
+      }
+    }
+
+    fetchLocations()
+  }, [])
+
+  /* Hide if no data */
+  if (!locations.length) return null
+
   return (
     <section className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 py-16">
       <motion.div
@@ -127,7 +119,7 @@ export default function LocationAddress() {
         whileInView="show"
         viewport={{ once: true, margin: "-80px" }}
       >
-        {LOCATIONS.map((location, index) => (
+        {locations.map((location, index) => (
           <motion.div key={index} variants={cardVariants}>
             <Card className="border-none shadow-none px-4">
               <CardContent className="p-0 space-y-3">

@@ -63,6 +63,7 @@ export default function AdvisorCard({ data }: { data: AdvisorData }) {
           alt={data.name}
           width={400}
           height={400}
+          priority={false}
           className="aspect-square object-cover"
         />
       </div>
@@ -77,10 +78,13 @@ export default function AdvisorCard({ data }: { data: AdvisorData }) {
         {data.role}
       </p>
 
-      {/* Accordion Button */}
+      {/* Accordion Toggle */}
       <button
-        onClick={() => setOpen(!open)}
-        className="mt-3 flex items-center gap-2 text-sm font-semibold text-primary"
+        type="button"
+        aria-expanded={open}
+        aria-controls={`advisor-bio-${data.name}`}
+        onClick={() => setOpen((prev) => !prev)}
+        className="mt-3 flex items-center gap-2 text-sm font-semibold text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
       >
         Bio
         <ChevronDown
@@ -92,8 +96,9 @@ export default function AdvisorCard({ data }: { data: AdvisorData }) {
 
       {/* Accordion Content */}
       <motion.div
+        id={`advisor-bio-${data.name}`}
         variants={accordionVariants}
-        initial="closed"
+        initial={false}
         animate={open ? "open" : "closed"}
         className="overflow-hidden"
       >

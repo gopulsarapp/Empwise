@@ -8,11 +8,6 @@ import IntegrisExperience from "@/components/sections/IntegrisExperience"
 import CommunityBankSolutions from "@/components/CommunityBankSolutions"
 
 export default function Page() {
- const headerdata = {
-    title: "IT for Highly Regulated Industries",
-    subtitles: "Built for compliance and powered by strategy",
-    imageUrl: "https://integrisit.com/wp-content/uploads/2025/07/HRI-Hero2.jpg",
-  };
 
 
   return (

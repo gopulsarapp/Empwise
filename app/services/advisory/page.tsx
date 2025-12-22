@@ -5,11 +5,6 @@ import DiscoverySection from "@/components/sections/DiscoverySection";
 import IntegrisExperience from "@/components/sections/IntegrisExperience";
 
 export default function Page() {
-  const headerdata = {
-    title: "Advisory Services",
-    subtitles: "Your partner in IT strategy and management",
-    imageUrl: "https://integrisit.com/wp-content/uploads/2025/07/AdvisoryHero.jpg",
-  };
 
   return (
     <>

@@ -24,9 +24,9 @@ type ContentfulAsset = {
 type ContentfulBannerFields = {
   title: string
   subtitle?: string
-  desc?: string
+  paragraph?: string
   pageName: string
-  bg: {
+  bg?: {
     sys: {
       id: string
     }
@@ -72,7 +72,7 @@ export default function HeaderTitle({ pageName }: HeaderTitleProps) {
     title: string
     subtitle?: string
     desc?: string
-    imageUrl: string
+    imageUrl?: string
     buttonName?: string
     buttonUrl?: string
   } | null>(null)
@@ -88,21 +88,25 @@ export default function HeaderTitle({ pageName }: HeaderTitleProps) {
           (item) => item.fields.pageName === pageName
         )
 
-        if (!banner) {
+        if (!banner || !banner.fields.bg) {
           setData(null)
           return
         }
 
-        const assetId = banner.fields.bg.sys.id
         const asset = res.data.includes?.Asset?.find(
-          (a) => a.sys.id === assetId
+          (a) => a.sys.id === banner.fields.bg?.sys.id
         )
+
+        if (!asset) {
+          setData(null)
+          return
+        }
 
         setData({
           title: banner.fields.title,
           subtitle: banner.fields.subtitle,
-          desc: banner.fields.desc,
-          imageUrl: asset ? `https:${asset.fields.file.url}` : "",
+          desc: banner.fields.paragraph,
+          imageUrl: `https:${asset.fields.file.url}`,
           buttonName: banner.fields.buttonName,
           buttonUrl: banner.fields.buttonUrl,
         })
@@ -117,24 +121,26 @@ export default function HeaderTitle({ pageName }: HeaderTitleProps) {
     fetchBanner()
   }, [pageName])
 
-  /* ✅ Hide header completely if no data */
-  if (!data) return null
+  /* ✅ Hide header if image is missing */
+  if (!data || !data.imageUrl) return null
 
   return (
     <section className="relative w-full overflow-hidden">
       {/* Background */}
-      <motion.div
-        variants={bgVariants}
-        initial="hidden"
-        animate="visible"
-        className="absolute inset-0"
-      >
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${data.imageUrl})` }}
-        />
-        <div className="absolute inset-0 bg-black/60" />
-      </motion.div>
+      {data.imageUrl && (
+        <motion.div
+          variants={bgVariants}
+          initial="hidden"
+          animate="visible"
+          className="absolute inset-0"
+        >
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url(${data.imageUrl})` }}
+          />
+          <div className="absolute inset-0 bg-black/60" />
+        </motion.div>
+      )}
 
       {/* Content */}
       <div className="relative mx-auto max-w-[1440px] px-6 py-24 md:py-32 text-white">

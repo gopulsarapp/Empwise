@@ -3,7 +3,7 @@
 import { motion, type Variants } from "framer-motion"
 import { useEffect, useState } from "react"
 import axios from "axios"
-import BookForm from "../BookForm"
+import ContactForm from "../Contact/ContactForm"
 
 /* ------------------ Types ------------------ */
 
@@ -133,7 +133,7 @@ export default function DiscoverySection() {
         </motion.div>
 
         {/* Form */}
-        <BookForm/>
+        <ContactForm/>
       </motion.div>
     </motion.section>
   )

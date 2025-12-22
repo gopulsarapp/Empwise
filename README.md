@@ -70,13 +70,13 @@ Full PAge
 pageName="leadership"
 
 # Headertitle
-founders
-leadership
+
+
 contact
 community-banks
 highly-regulated-industries
 legal
-our-locations
+
 our-partners
 resources
 Advisory
@@ -89,3 +89,7 @@ Governance
 # done
 manufacturing-it-services
 managedIt
+founders
+leadership
+our-locations
+about
