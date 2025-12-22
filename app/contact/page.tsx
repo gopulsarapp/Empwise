@@ -15,7 +15,7 @@ export default function Page() {
 
   return (
     <>
-      <HeaderTitle data={headerdata} />
+      <HeaderTitle pageName="contact" />
       <ContactSection/>
       <DiscoverySection />
     </>

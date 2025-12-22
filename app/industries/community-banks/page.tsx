@@ -14,7 +14,7 @@ export default function Page() {
 
   return (
     <>
-      <HeaderTitle data={headerdata} />
+      <HeaderTitle pageName="community-banks" />
               <IntegrisExperience
                     order="left"
                     title="Responsible IT Architecture (RITA)"

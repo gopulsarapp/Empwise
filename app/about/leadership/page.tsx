@@ -14,7 +14,7 @@ export default function Page() {
 
   return (
     <>
-      <HeaderTitle data={headerdata} />
+      <HeaderTitle pageName="leadership" />
       <LeadershipSection/>
       <DirectorsSection/>
       <AdvisorsSection/>

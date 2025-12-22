@@ -17,7 +17,7 @@ export default function Page() {
 
   return (
     <>
-      <HeaderTitle data={headerdata}/>
+      <HeaderTitle pageName="highly-regulated-industries"/>
       <WhyChooseUs />
       <ClientRating />
               <IntegrisExperience

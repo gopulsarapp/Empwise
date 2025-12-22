@@ -14,7 +14,7 @@ export default function page() {
 
     return (
         <>
-            <HeaderTitle data={headerdata} />
+            <HeaderTitle pageName="our-locations" />
             <LocationAddress/>
             <DiscoverySection />
         </>

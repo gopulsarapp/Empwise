@@ -16,7 +16,7 @@ that solve real-world business challenges.`,
 
   return (
     <>
-      <HeaderTitle data={headerdata} />
+      <HeaderTitle  pageName="our-partners"/>
       <PartnerBrands/>
       <DiscoverySection />
     </>

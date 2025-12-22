@@ -66,3 +66,26 @@ Full PAge
 
 15 total 
 
+
+pageName="leadership"
+
+# Headertitle
+founders
+leadership
+contact
+community-banks
+highly-regulated-industries
+legal
+our-locations
+our-partners
+resources
+Advisory
+cloud
+cybersecurity
+Governance
+
+
+
+# done
+manufacturing-it-services
+managedIt

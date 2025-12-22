@@ -13,7 +13,7 @@ export default function Page() {
 
   return (
     <>
-      <HeaderTitle data={headerdata} />
+      <HeaderTitle pageName="cybersecurity" />
       <IntegrisExperience
         order="left"
         title="Responsible IT Architecture (RITA)"
