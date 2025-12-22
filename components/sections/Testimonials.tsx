@@ -1,45 +1,38 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
+import axios from "axios"
 import { motion, type Variants } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 
-const testimonials = [
-  {
-    quote:
-      "Integris has been an outstanding partner… Their team is professional, knowledgeable and customer-service driven. Integris’ proactive collaborative approach has been critical in helping us build an IT infrastructure that enables our success today and supports our long-term positioning strategy for the future.",
-    name: "Michelle Angalet",
-    title: "COO",
-    company: "Inspiritus",
-  },
-  {
-    quote:
-      "Our firm has worked with the Integris team for over 20 years, and we value the true partnership between us. They are an extension of our business and are always willing to step in and do whatever it takes to meet our firm’s needs... Our firm has peace of mind knowing that our technology is managed and supported by such a trusted, competent company.",
-    name: "Gayla Thornton",
-    title: "Partner",
-    company: "Armstrong, Backus & Co.",
-  },
-  {
-    quote:
-      "They have helped us scale and grow to the tune of a new branch every year as well as a core conversion last year, all while keeping us very secure and performing very well on our internal audits and our government exams. That personal relationship and trust has led to extreme growth for our bank.",
-    name: "Jared Curtis",
-    title: "Senior Credit and Systems Manager",
-    company: "Frontier Bank of Texas",
-  },
-  {
-    quote:
-      "Integris is always attentive to our needs. Integris takes ownership and consistently delivers 1st class service. Always a pleasure to collaborate with and a valuable asset to be had by any team.",
-    name: "Dan G.",
-    title: "IT Support Specialist",
-    company: "Lamb Technologies",
-  },
-]
+/* ------------------ Types ------------------ */
+
+interface Testimonial {
+  quote: string
+  name: string
+  title: string
+  company: string
+}
+
+interface TestimonialsProps {
+  pageName: string
+}
+
+type ContentfulFields = {
+  pageName: string
+  title: string
+  testimonials: Testimonial[]
+}
+
+type ContentfulResponse = {
+  items: { fields: ContentfulFields }[]
+}
+
+/* ------------------ Animations ------------------ */
 
 const containerVariants: Variants = {
   hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.15 },
-  },
+  visible: { transition: { staggerChildren: 0.15 } },
 }
 
 const itemVariants: Variants = {
@@ -51,28 +44,62 @@ const itemVariants: Variants = {
   },
 }
 
-export default function Testimonials() {
+/* ------------------ Component ------------------ */
+
+export default function Testimonials({ pageName }: TestimonialsProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
 
+  const [data, setData] = useState<{
+    title: string
+    testimonials: Testimonial[]
+  } | null>(null)
+
+  /* Fetch testimonials */
   useEffect(() => {
+    async function fetchTestimonials() {
+      try {
+        const res = await axios.get<ContentfulResponse>(
+          `${process.env.NEXT_PUBLIC_CONTENTFUL_URL}&content_type=testimonialsHomeAndManagedITServices`
+        )
+
+        const entry = res.data.items.find(
+          (item) => item.fields.pageName === pageName
+        )
+
+        if (!entry) return
+
+        setData({
+          title: entry.fields.title,
+          testimonials: entry.fields.testimonials,
+        })
+      } catch (error) {
+        console.error("Testimonials fetch error:", error)
+      }
+    }
+
+    fetchTestimonials()
+  }, [pageName])
+
+  /* Auto-scroll (mobile only) */
+  useEffect(() => {
+    if (!scrollRef.current || !data) return
+
     const isMobile = window.matchMedia("(max-width: 767px)").matches
-    if (!isMobile || !scrollRef.current) return
+    if (!isMobile) return
 
     const container = scrollRef.current
     let animationId: number
     let isPaused = false
-    const speed = 0.35 // px per frame
+    const speed = 0.35
 
     const autoScroll = () => {
       if (!isPaused) {
         const maxScroll =
           container.scrollWidth - container.clientWidth
-
-        if (container.scrollLeft >= maxScroll) {
-          container.scrollLeft = 0
-        } else {
-          container.scrollLeft += speed
-        }
+        container.scrollLeft =
+          container.scrollLeft >= maxScroll
+            ? 0
+            : container.scrollLeft + speed
       }
       animationId = requestAnimationFrame(autoScroll)
     }
@@ -94,7 +121,10 @@ export default function Testimonials() {
       container.removeEventListener("mouseenter", pause)
       container.removeEventListener("mouseleave", resume)
     }
-  }, [])
+  }, [data])
+
+  /* Hide section if no data */
+  if (!data) return null
 
   return (
     <section className="w-full bg-white py-24 my-24">
@@ -105,32 +135,37 @@ export default function Testimonials() {
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
       >
+        {/* Title */}
         <motion.h2
           variants={itemVariants}
-          className="text-center text-3xl md:text-4xl font-bold mb-16 px-6"
+          className="text-center text-3xl md:text-4xl font-bold mb-16 px-6 whitespace-pre-line"
         >
-          We’re obsessed with providing a flawless experience, and clients are
-          responding
+          {data.title}
         </motion.h2>
 
+        {/* Testimonials */}
         <div
           ref={scrollRef}
           className="
-            flex gap-6 px-6 overflow-x-scroll snap-x snap-mandatory
+            flex justify-center gap-6 px-6
+            overflow-x-scroll snap-x snap-mandatory
             md:grid md:grid-cols-2 lg:grid-cols-4
             md:gap-8 md:overflow-visible
           "
         >
-          {testimonials.map((t) => (
+          {data.testimonials.map((t, i) => (
             <motion.div
-              key={t.name}
+              key={`${t.name}-${i}`}
               variants={itemVariants}
-              className="min-w-[85%] sm:min-w-[70%] md:min-w-0 snap-center h-full"
+              className="
+                min-w-[85%] sm:min-w-[70%] md:min-w-0
+                snap-center h-full mx-auto
+              "
             >
               <Card className="relative border-2 border-orange-400 rounded-xl h-full">
                 <CardContent className="p-6 space-y-6">
                   <p className="text-sm leading-relaxed">{t.quote}</p>
-                  <div className="absolute -bottom-3 left-10 w-6 h-6 bg-white border-r-2 border-b-2 border-orange-400 rotate-45" />
+                  <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-white border-r-2 border-b-2 border-orange-400 rotate-45" />
                 </CardContent>
               </Card>
 

@@ -33,7 +33,7 @@ path to digital maturity so you will continuously succeed in an
 ever-changing world.`}
 
       />
-      <Testimonials />
+     <Testimonials pageName="home" />
       <DiscoverySection />
     </>
   )

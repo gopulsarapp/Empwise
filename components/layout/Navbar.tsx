@@ -27,7 +27,6 @@ const COMPANY = [
   { label: "About", href: "/about/" },
   { label: "Founders", href: "/about/founders/" },
   { label: "Leadership", href: "/about/leadership/" },
-  { label: "Press", href: "/about/press/" },
   { label: "Location", href: "/our-locations" },
   { label: "Partner", href: "/our-partners/" },
 ]

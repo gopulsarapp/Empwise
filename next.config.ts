@@ -1,21 +1,19 @@
-// import type { NextConfig } from "next";
-
-// const nextConfig: NextConfig = {
-//   /* config options here */
-// };
-
-// export default nextConfig;
-
-
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
     remotePatterns: [
+      // ✅ Contentful images
       {
-        protocol: "https",
-        hostname: "integrisit.com",
-        pathname: "/wp-content/uploads/**",
+        protocol: 'https',
+        hostname: 'images.ctfassets.net',
+        pathname: '/**',
+      },
+
+      // ✅ WordPress images (existing)
+      {
+        protocol: 'https',
+        hostname: 'integrisit.com',
+        pathname: '/wp-content/uploads/**',
       },
     ],
   },

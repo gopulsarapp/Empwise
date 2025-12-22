@@ -54,3 +54,15 @@ remonve nav profolio
 
 Addresss 
 
+
+https://integrisit.com/services/managed-it/
+http://192.168.1.45:3000/services/managed-it 
+Full Page Update Managed it  
+9
+
+https://integrisit.com/industries/manufacturing-it-services/
+Full PAge 
+6
+
+15 total 
+
