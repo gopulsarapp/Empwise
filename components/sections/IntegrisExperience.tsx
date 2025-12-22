@@ -1,18 +1,48 @@
 "use client"
 
+import { useEffect, useState } from "react"
+import axios from "axios"
 import { motion, type Variants } from "framer-motion"
 import { cn } from "@/lib/utils"
 
 /* ------------------ Types ------------------ */
 
-interface IntegrisExperienceProps {
+type ExperienceData = {
   title: string
   description: string
   image: string
+}
+
+interface ExperienceProps {
   order?: "left" | "right"
 }
 
-/* ------------------ Variants ------------------ */
+
+
+type ContentfulResponse = {
+  items: Array<{
+    fields: {
+      pageName: string
+      title: string
+      description: string
+      bgImage: {
+        sys: { id: string }
+      }
+    }
+  }>
+  includes?: {
+    Asset?: Array<{
+      sys: { id: string }
+      fields: {
+        file: {
+          url: string
+        }
+      }
+    }>
+  }
+}
+
+/* ------------------ Animations ------------------ */
 
 const containerVariants: Variants = {
   hidden: {},
@@ -30,7 +60,7 @@ const itemVariants: Variants = {
     y: 0,
     transition: {
       duration: 0.6,
-      ease: "easeOut",
+      ease: [0.16, 1, 0.3, 1],
     },
   },
 }
@@ -42,7 +72,7 @@ const bgVariants: Variants = {
     scale: 1,
     transition: {
       duration: 1.2,
-      ease: "easeOut",
+      ease: [0.16, 1, 0.3, 1],
     },
   },
 }
@@ -50,15 +80,47 @@ const bgVariants: Variants = {
 /* ------------------ Component ------------------ */
 
 export default function IntegrisExperience({
-  title,
-  description,
-  image,
   order = "right",
-}: IntegrisExperienceProps) {
+}: ExperienceProps) {
+  const [data, setData] = useState<ExperienceData | null>(null)
+
+  useEffect(() => {
+    async function fetchExperience() {
+      try {
+        const res = await axios.get<ContentfulResponse>(
+          `${process.env.NEXT_PUBLIC_CONTENTFUL_URL}&content_type=homeAboutExperience`
+        )
+
+        const entry = res.data.items[0]
+        if (!entry) return
+
+        const assets = res.data.includes?.Asset ?? []
+
+        const bgAsset = assets.find(
+          (a) => a.sys.id === entry.fields.bgImage.sys.id
+        )
+
+        if (!bgAsset) return
+
+        setData({
+          title: entry.fields.title,
+          description: entry.fields.description,
+          image: `https:${bgAsset.fields.file.url}`,
+        })
+      } catch (error) {
+        console.error("Integris experience fetch error:", error)
+      }
+    }
+
+    fetchExperience()
+  }, [])
+
+  if (!data) return null
+
   return (
     <motion.section
       className="relative w-full min-h-[520px] lg:min-h-[640px] bg-cover bg-center"
-      style={{ backgroundImage: `url(${image})` }}
+      style={{ backgroundImage: `url(${data.image})` }}
       variants={bgVariants}
       initial="hidden"
       whileInView="visible"
@@ -82,13 +144,16 @@ export default function IntegrisExperience({
             className="bg-white rounded-xl shadow-xl p-8 md:p-10 max-w-xl"
           >
             <h2 className="text-2xl md:text-3xl font-bold mb-6">
-              {title}
+              {data.title}
             </h2>
 
             <div className="space-y-4 text-muted-foreground leading-relaxed">
-              {description.split("\n\n").map((para, index) => (
-                <p key={index}>{para}</p>
-              ))}
+              {data.description
+                .replace(/\s+$/, "")
+                .split("\n\n")
+                .map((para, index) => (
+                  <p key={index}>{para}</p>
+                ))}
             </div>
           </motion.div>
         </div>

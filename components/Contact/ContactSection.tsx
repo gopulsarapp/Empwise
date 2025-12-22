@@ -89,7 +89,7 @@ export default function ContactSection() {
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-4 pt-15">
+          <div className="flex flex-wrap gap-4 pt-5">
             <Button variant="destructive">
               {data.buttonJson.clientSupport}
             </Button>
