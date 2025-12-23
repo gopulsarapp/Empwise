@@ -14,7 +14,7 @@ export default function Page() {
                    order="left"
                    pageName="aBoutPageItArchitecture"
                  />
-           <AdvisoryServices/>
+           {/* <AdvisoryServices/> */}
              <Testimonials pageName="managedIt" />
       <DiscoverySection />
     </>

@@ -1,6 +1,6 @@
 "use client";
 
-import CommunityBankSolutions from "@/components/CommunityBankSolutions";
+// import CommunityBankSolutions from "@/components/CommunityBankSolutions";
 import HeaderTitle from "@/components/HeaderTitle";
 import HeaderFormSection from "@/components/industries/highly-regulated-industries/HeaderFormSection";
 import DiscoverySection from "@/components/sections/DiscoverySection";
@@ -17,7 +17,7 @@ export default function Page() {
         pageName="aBoutPageItArchitecture"
       />
 
-      <CommunityBankSolutions />
+      {/* <CommunityBankSolutions /> */}
       <DiscoverySection />
     </>
   );

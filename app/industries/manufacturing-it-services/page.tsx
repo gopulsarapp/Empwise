@@ -17,7 +17,7 @@ export default function Page() {
                    order="left"
                    pageName="aBoutPageItArchitecture"
                  />
-              <CommunityBankSolutions/>
+              {/* <CommunityBankSolutions/> */}
       <DiscoverySection />
     </>
   );
