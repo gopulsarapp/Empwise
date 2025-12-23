@@ -13,15 +13,20 @@ export default function Page() {
 
   return (
     <>
-      <HeaderTitle pageName="highly-regulated-industries"/>
-      <HeaderFormSection pageName="highlyRegulatedIndustriesPageSection"/>
+      <HeaderTitle pageName="highly-regulated-industries" />
+      <HeaderFormSection
+        contentType="highlyRegulatedIndustriesPageSection"
+        selectPage="industries/highly-regulated-industries"
+      />
+
+
       {/* <WhyChooseUs />
       <ClientRating /> */}
-             <IntegrisExperience
-                     order="left"
-                     pageName="aBoutPageItArchitecture"
-                   />
-                    {/* <CommunityBankSolutions/> */}
+      <IntegrisExperience
+        order="left"
+        pageName="aBoutPageItArchitecture"
+      />
+      {/* <CommunityBankSolutions/> */}
       {/* <AdvisoryServices/> */}
       {/* <ConnectWithTeam/> */}
       <DiscoverySection />

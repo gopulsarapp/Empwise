@@ -13,7 +13,8 @@ type SectionData = {
 }
 
 interface HeaderFormSectionProps {
-  pageName: string
+  contentType: string
+  selectPage: string
 }
 
 interface ContentfulEntry {
@@ -31,7 +32,8 @@ interface ContentfulResponse {
 /* ------------------ Component ------------------ */
 
 export default function HeaderFormSection({
-  pageName,
+  contentType,
+  selectPage,
 }: HeaderFormSectionProps) {
   const [data, setData] = useState<SectionData | null>(null)
 
@@ -39,14 +41,16 @@ export default function HeaderFormSection({
     async function fetchSection() {
       try {
         const res = await axios.get<ContentfulResponse>(
-          `${process.env.NEXT_PUBLIC_CONTENTFUL_URL}` +
-            `&content_type=${encodeURIComponent(pageName)}`
+          `${process.env.NEXT_PUBLIC_CONTENTFUL_URL}&content_type=${contentType}`
         )
-       
-        const entry = res.data.items[0];
+
+        // ✅ FILTER BY fields.pageName
+        const entry = res.data.items.find(
+          (item) => item.fields.pageName === selectPage
+        )
 
         if (!entry) {
-          console.warn(`No section found for pageName: ${pageName}`)
+          console.warn(`No section found for pageName: ${selectPage}`)
           return
         }
 
@@ -60,7 +64,7 @@ export default function HeaderFormSection({
     }
 
     fetchSection()
-  }, [pageName])
+  }, [contentType, selectPage])
 
   if (!data) return null
 

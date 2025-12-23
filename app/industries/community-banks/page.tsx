@@ -10,7 +10,10 @@ export default function Page() {
   return (
     <>
       <HeaderTitle pageName="community-banks" />
-        <HeaderFormSection pageName="communityBanksPageHeader"/>
+             <HeaderFormSection
+                contentType="highlyRegulatedIndustriesPageSection"
+                selectPage="industries/community-banks"
+              />
      
       <IntegrisExperience
         order="left"

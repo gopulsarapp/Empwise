@@ -1,6 +1,6 @@
 "use client";
 
-import CommunityBankSolutions from "@/components/CommunityBankSolutions";
+// import CommunityBankSolutions from "@/components/CommunityBankSolutions";
 import HeaderTitle from "@/components/HeaderTitle";
 import HeaderFormSection from "@/components/industries/highly-regulated-industries/HeaderFormSection";
 import DiscoverySection from "@/components/sections/DiscoverySection";
@@ -12,7 +12,10 @@ export default function Page() {
   return (
     <>
       <HeaderTitle pageName="manufacturing-it-services"/>
-      <HeaderFormSection pageName="manufacturingItServices"/>
+        <HeaderFormSection
+                      contentType="highlyRegulatedIndustriesPageSection"
+                      selectPage="industries/manufacturing-it-services"
+                    />
            <IntegrisExperience
                    order="left"
                    pageName="aBoutPageItArchitecture"

@@ -10,7 +10,10 @@ export default function Page() {
   return (
     <>
       <HeaderTitle pageName="legal" />
-        <HeaderFormSection pageName="legalPage"/>
+        <HeaderFormSection
+                      contentType="highlyRegulatedIndustriesPageSection"
+                      selectPage="industries/legal"
+                    />
        
       <IntegrisExperience
               order="left"
