@@ -1,7 +1,7 @@
 "use client";
 
 import HeaderTitle from "@/components/HeaderTitle";
-import AdvisoryServices from "@/components/industries/highly-regulated-industries/AdvisoryServices";
+// import AdvisoryServices from "@/components/industries/highly-regulated-industries/AdvisoryServices";
 import DiscoverySection from "@/components/sections/DiscoverySection";
 import IntegrisExperience from "@/components/sections/IntegrisExperience";
 import Testimonials from "@/components/sections/Testimonials";
