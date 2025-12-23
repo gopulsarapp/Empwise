@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google"
 
 import Navbar from "@/components/layout/Navbar"
 import Footer from "@/components/layout/Footer"
+
 import "./globals.css"
 
 /* ================= Fonts ================= */
@@ -17,118 +18,54 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 })
 
-/* ================= Types ================= */
+/* ================= Metadata (STATIC SEO) ================= */
 
-type Asset = {
-  fields: {
-    file: {
-      url: string
-    }
-  }
-}
+export const metadata: Metadata = {
+  title: "Novotek AI Solutions",
+  description:
+    "Novotek.ai helps businesses innovate with AI-driven solutions, intelligent automation, and data insights designed for growth and efficiency.",
 
-type HomeSEOFields = {
-  title: string
-  websiteDescriptipn?: string
-  websiteKeyWords?: string
-  websiteFavicon?: Asset
-  websiteLogo?: Asset
-  websiteCanonicalCode?: string
-  websiteRobotsMetaTag?: string
-  websiteOpenGraphTags?: string
-  websiteTwitterCardTags?: string
-}
+  keywords:
+    "Novotek AI, AI solutions, artificial intelligence, machine learning, business automation, AI consulting, data intelligence",
 
-type ContentfulResponse = {
-  items: Array<{
-    fields: HomeSEOFields
-  }>
-}
+  alternates: {
+    canonical: "https://www.novotek.ai/",
+  },
 
-/* ================= Metadata ================= */
+  robots: {
+    index: true,
+    follow: true,
+  },
 
-export async function generateMetadata(): Promise<Metadata> {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_CONTENTFUL_URL}&content_type=home`,
-      { next: { revalidate: 3600 } }
-    )
+  icons: {
+    icon: "/ico.svg",
+    shortcut: "/ico.svg",
+    apple: "/ico.svg",
+  },
 
-    const data: ContentfulResponse = await res.json()
-
-    if (!data.items.length) {
-      return {
-        title: "Novotek.ai",
-        description: "AI-powered solutions for smarter business growth.",
-      }
-    }
-
-    const fields = data.items[0].fields
-
-    const faviconUrl = fields.websiteFavicon?.fields?.file?.url
-      ? `https:${fields.websiteFavicon.fields.file.url}`
-      : undefined
-
-    const logoUrl = fields.websiteLogo?.fields?.file?.url
-      ? `https:${fields.websiteLogo.fields.file.url}`
-      : undefined
-
-    return {
-      title: fields.title,
-      description: fields.websiteDescriptipn,
-
-      keywords: fields.websiteKeyWords,
-
-      alternates: {
-        canonical: "https://www.novotek.ai/",
+  openGraph: {
+    title: "Novotek.ai – Intelligent AI Solutions",
+    description:
+      "AI-driven automation, analytics, and scalable technology solutions for modern businesses.",
+    url: "https://www.novotek.ai/",
+    siteName: "Novotek.ai",
+    type: "website",
+    images: [
+      {
+        url: "https://www.novotek.ai/og.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Novotek.ai",
       },
+    ],
+  },
 
-      robots: {
-        index: true,
-        follow: true,
-      },
-
-      icons: faviconUrl
-        ? {
-            icon: faviconUrl,
-            shortcut: faviconUrl,
-            apple: faviconUrl,
-          }
-        : undefined,
-
-      openGraph: {
-        title: fields.title,
-        description: fields.websiteDescriptipn,
-        url: "https://www.novotek.ai/",
-        siteName: "Novotek.ai",
-        type: "website",
-        images: logoUrl
-          ? [
-              {
-                url: logoUrl,
-                width: 1200,
-                height: 630,
-                alt: "Novotek.ai",
-              },
-            ]
-          : undefined,
-      },
-
-      twitter: {
-        card: "summary_large_image",
-        title: fields.title,
-        description: "AI solutions for business growth.",
-        images: logoUrl ? [logoUrl] : undefined,
-      },
-    }
-  } catch (error) {
-    console.error("SEO fetch error:", error)
-
-    return {
-      title: "Novotek.ai",
-      description: "AI-powered solutions for smarter business growth.",
-    }
-  }
+  twitter: {
+    card: "summary_large_image",
+    title: "Novotek",
+    description: "AI solutions for business growth.",
+    images: ["https://www.novotek.ai/og.jpg"],
+  },
 }
 
 /* ================= Root Layout ================= */
@@ -139,10 +76,9 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <body
-        suppressHydrationWarning
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
         <Navbar />
         <main className="flex-1 mt-[110px]">{children}</main>
