@@ -146,3 +146,9 @@ insdurtial 7 compoment
 insdurtial 6 compoment
 
 2
+
+
+
+logo +
+nota 
+wrewrite 
