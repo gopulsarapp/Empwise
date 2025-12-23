@@ -15,7 +15,7 @@ type MenuItem = {
 }
 
 type MenuGroup = {
-  menuName: "solutions2" | "industries2" | "company2"
+  menuName: "solutions" | "industries" | "company"
   menuItems: MenuItem[]
 }
 
@@ -56,11 +56,12 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [openMenu, setOpenMenu] = useState<string | null>(null)
 
-  /* Lock scroll */
+  /* Lock scroll when mobile menu open */
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : ""
   }, [mobileOpen])
 
+  /* Fetch Navbar from Contentful */
   useEffect(() => {
     async function fetchNavbar() {
       try {
@@ -100,7 +101,7 @@ export default function Navbar() {
 
   return (
     <header className="fixed top-0 left-0 z-50 w-full bg-white border-b">
-      {/* Top Bar */}
+      {/* ================= Top Bar ================= */}
       <div className="border-b">
         <div className="mx-auto max-w-[1440px] px-6 py-2 flex justify-end gap-6 text-sm">
           <span className="font-medium">
@@ -110,15 +111,23 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Main Nav */}
-      <div className="mx-auto max-w-[1440px] px-6 py-4 flex items-center">
+      {/* ================= Main Navbar ================= */}
+      <div className="mx-auto max-w-[1440px] px-6 py-6 flex items-center">
+        {/* Logo */}
         <Link href="/">
-          <Image src={data.logo} alt="Logo" width={140} height={32} />
+          <Image
+            src={data.logo}
+            alt="Logo"
+            width={220}
+            height={90}
+            priority
+            className="w-40 md:w-48 lg:w-56 h-auto"
+          />
         </Link>
 
         <div className="flex-1" />
 
-        {/* Desktop Nav */}
+        {/* ================= Desktop Nav ================= */}
         <nav className="hidden md:flex items-center gap-8">
           {["solutions", "industries", "company"].map((menu) => (
             <div key={menu} className="relative">
@@ -167,13 +176,16 @@ export default function Navbar() {
           ))}
         </nav>
 
-        {/* Mobile Button */}
-        <button className="md:hidden ml-4" onClick={() => setMobileOpen(true)}>
+        {/* ================= Mobile Button ================= */}
+        <button
+          className="md:hidden ml-4"
+          onClick={() => setMobileOpen(true)}
+        >
           <Menu />
         </button>
       </div>
 
-      {/* Mobile Menu */}
+      {/* ================= Mobile Menu ================= */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
@@ -183,7 +195,14 @@ export default function Navbar() {
             exit={{ opacity: 0 }}
           >
             <div className="flex items-center justify-between px-6 py-4 border-b">
-              <Image src={data.logo} alt="Logo" width={120} height={28} />
+              <Image
+                src={data.logo}
+                alt="Logo"
+                width={180}
+                height={60}
+                className="w-36 h-auto"
+                priority
+              />
               <button onClick={() => setMobileOpen(false)}>
                 <X />
               </button>
