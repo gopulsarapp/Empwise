@@ -3,188 +3,177 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
+import axios from "axios"
 import { Menu, X, ChevronDown } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
-/* ================= MENU DATA ================= */
+/* ================= Types ================= */
 
-const SOLUTIONS = [
-  { label: "Managed IT Services", href: "/services/managed-it" },
-  { label: "Cybersecurity Services", href: "/services/cybersecurity" },
-  { label: "Cloud Services", href: "/services/cloud" },
-  { label: "Governance Services", href: "/services/governance" },
-  { label: "Advisory Services", href: "/services/advisory" },
-]
+type MenuItem = {
+  label: string
+  href: string
+}
 
-const INDUSTRIES = [
-  { label: "Highly Regulated Industries", href: "/industries/highly-regulated-industries" },
-  { label: "Community Banks", href: "/industries/community-banks" },
-  { label: "Legal", href: "/industries/legal" },
-  { label: "Manufacturing IT Services", href: "/industries/manufacturing-it-services" },
-]
+type MenuGroup = {
+  menuName: "solutions2" | "industries2" | "company2"
+  menuItems: MenuItem[]
+}
 
-const COMPANY = [
-  { label: "About", href: "/about/" },
-  { label: "Founders", href: "/about/founders/" },
-  { label: "Leadership", href: "/about/leadership/" },
-  { label: "Location", href: "/our-locations" },
-  { label: "Partner", href: "/our-partners/" },
-]
+type NavbarData = {
+  logo: string
+  phone: string
+  clientSupport: string
+  menus: MenuGroup[]
+  topLinks: MenuItem[]
+}
+
+type ContentfulResponse = {
+  items: Array<{
+    fields: {
+      phone: string
+      clientSupport: string
+      logo: { sys: { id: string } }
+      navigation: {
+        menus: MenuGroup[]
+        topLevelLinks: MenuItem[]
+      }
+    }
+  }>
+  includes?: {
+    Asset?: Array<{
+      sys: { id: string }
+      fields: {
+        file: { url: string }
+      }
+    }>
+  }
+}
+
+/* ================= Component ================= */
 
 export default function Navbar() {
+  const [data, setData] = useState<NavbarData | null>(null)
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [solutionsOpen, setSolutionsOpen] = useState(false)
-  const [industriesOpen, setIndustriesOpen] = useState(false)
-  const [companyOpen, setCompanyOpen] = useState(false)
+  const [openMenu, setOpenMenu] = useState<string | null>(null)
 
-  /* Lock scroll on mobile menu open */
+  /* Lock scroll */
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : ""
   }, [mobileOpen])
 
+  useEffect(() => {
+    async function fetchNavbar() {
+      try {
+        const res = await axios.get<ContentfulResponse>(
+          `${process.env.NEXT_PUBLIC_CONTENTFUL_URL}&content_type=navbar`
+        )
+
+        const entry = res.data.items[0]
+        if (!entry) return
+
+        const assets = res.data.includes?.Asset ?? []
+        const logoAsset = assets.find(
+          (a) => a.sys.id === entry.fields.logo.sys.id
+        )
+
+        if (!logoAsset) return
+
+        setData({
+          logo: `https:${logoAsset.fields.file.url}`,
+          phone: entry.fields.phone,
+          clientSupport: entry.fields.clientSupport,
+          menus: entry.fields.navigation.menus,
+          topLinks: entry.fields.navigation.topLevelLinks,
+        })
+      } catch (error) {
+        console.error("Navbar fetch error:", error)
+      }
+    }
+
+    fetchNavbar()
+  }, [])
+
+  if (!data) return null
+
+  const getMenu = (name: string) =>
+    data.menus.find((m) => m.menuName === name)?.menuItems ?? []
+
   return (
     <header className="fixed top-0 left-0 z-50 w-full bg-white border-b">
-      {/* ================= Top Bar ================= */}
-      <div className="border-b md:block">
+      {/* Top Bar */}
+      <div className="border-b">
         <div className="mx-auto max-w-[1440px] px-6 py-2 flex justify-end gap-6 text-sm">
-          <span className="font-medium">(888) 330-8808</span>
-          <Link href="/support">Client Support</Link>
+          <span className="font-medium">
+            {data.phone.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3")}
+          </span>
+          <Link href={data.clientSupport}>Client Support</Link>
         </div>
       </div>
 
-      {/* ================= Main Nav ================= */}
+      {/* Main Nav */}
       <div className="mx-auto max-w-[1440px] px-6 py-4 flex items-center">
         <Link href="/">
-          <Image src="/asset/logo.png" alt="Logo" width={140} height={32} />
+          <Image src={data.logo} alt="Logo" width={140} height={32} />
         </Link>
 
         <div className="flex-1" />
 
-        {/* ================= Desktop Nav ================= */}
+        {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-8">
-          {/* Solutions */}
-          <div className="relative">
-            <button
-              onClick={() => {
-                setSolutionsOpen(!solutionsOpen)
-                setIndustriesOpen(false)
-                setCompanyOpen(false)
-              }}
-              className="flex items-center gap-1 font-medium"
-            >
-              Solutions
-              <ChevronDown className={`transition ${solutionsOpen ? "rotate-180" : ""}`} />
-            </button>
+          {["solutions", "industries", "company"].map((menu) => (
+            <div key={menu} className="relative">
+              <button
+                onClick={() =>
+                  setOpenMenu(openMenu === menu ? null : menu)
+                }
+                className="flex items-center gap-1 font-medium"
+              >
+                {menu.charAt(0).toUpperCase() + menu.slice(1)}
+                <ChevronDown
+                  className={`transition ${
+                    openMenu === menu ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
 
-            <AnimatePresence>
-              {solutionsOpen && (
-                <motion.div
-                  className="absolute top-full mt-3 w-72 rounded-xl bg-white border shadow-lg"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                >
-                  {SOLUTIONS.map(item => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className="block px-4 py-3 hover:bg-muted"
-                      onClick={() => setSolutionsOpen(false)}
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+              <AnimatePresence>
+                {openMenu === menu && (
+                  <motion.div
+                    className="absolute top-full mt-3 w-72 rounded-xl bg-white border shadow-lg"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                  >
+                    {getMenu(menu).map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="block px-4 py-3 hover:bg-muted"
+                        onClick={() => setOpenMenu(null)}
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ))}
 
-          {/* Industries */}
-          <div className="relative">
-            <button
-              onClick={() => {
-                setIndustriesOpen(!industriesOpen)
-                setSolutionsOpen(false)
-                setCompanyOpen(false)
-              }}
-              className="flex items-center gap-1 font-medium"
-            >
-              Industries
-              <ChevronDown className={`transition ${industriesOpen ? "rotate-180" : ""}`} />
-            </button>
-
-            <AnimatePresence>
-              {industriesOpen && (
-                <motion.div
-                  className="absolute top-full mt-3 w-72 rounded-xl bg-white border shadow-lg"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                >
-                  {INDUSTRIES.map(item => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className="block px-4 py-3 hover:bg-muted"
-                      onClick={() => setIndustriesOpen(false)}
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-          {/* Company */}
-          <div className="relative">
-            <button
-              onClick={() => {
-                setCompanyOpen(!companyOpen)
-                setSolutionsOpen(false)
-                setIndustriesOpen(false)
-              }}
-              className="flex items-center gap-1 font-medium"
-            >
-              Company
-              <ChevronDown className={`transition ${companyOpen ? "rotate-180" : ""}`} />
-            </button>
-
-            <AnimatePresence>
-              {companyOpen && (
-                <motion.div
-                  className="absolute top-full mt-3 w-56 rounded-xl bg-white border shadow-lg"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                >
-                  {COMPANY.map(item => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className="block px-4 py-3 hover:bg-muted"
-                      onClick={() => setCompanyOpen(false)}
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-          <Link href="/blogs">Blogs</Link>
-          <Link href="/resources">Resources</Link>
-          <Link href="/contact">Contact</Link>
+          {data.topLinks.map((link) => (
+            <Link key={link.href} href={link.href}>
+              {link.label}
+            </Link>
+          ))}
         </nav>
 
-        {/* ================= Mobile Menu Button ================= */}
+        {/* Mobile Button */}
         <button className="md:hidden ml-4" onClick={() => setMobileOpen(true)}>
           <Menu />
         </button>
       </div>
 
-      {/* ================= Mobile Menu ================= */}
+      {/* Mobile Menu */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
@@ -194,116 +183,34 @@ export default function Navbar() {
             exit={{ opacity: 0 }}
           >
             <div className="flex items-center justify-between px-6 py-4 border-b">
-              <Image src="/asset/logo.png" alt="Logo" width={120} height={28} />
-              <button
-                onClick={() => {
-                  setMobileOpen(false)
-                  setSolutionsOpen(false)
-                  setIndustriesOpen(false)
-                  setCompanyOpen(false)
-                }}
-              >
+              <Image src={data.logo} alt="Logo" width={120} height={28} />
+              <button onClick={() => setMobileOpen(false)}>
                 <X />
               </button>
             </div>
 
             <div className="px-6 py-6 space-y-6">
-              {/* Solutions */}
-              <button
-                className="w-full flex justify-between items-center font-medium"
-                onClick={() => {
-                  setSolutionsOpen(!solutionsOpen)
-                  setIndustriesOpen(false)
-                  setCompanyOpen(false)
-                }}
-              >
-                Solutions
-                <ChevronDown className={`transition ${solutionsOpen ? "rotate-180" : ""}`} />
-              </button>
-
-              {solutionsOpen && (
-                <div className="pl-4 space-y-2">
-                  {SOLUTIONS.map(item => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={() => setMobileOpen(false)}
-                      className="block text-sm"
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
-                </div>
+              {[...data.menus, { menuName: "links", menuItems: data.topLinks }].map(
+                (group) => (
+                  <div key={group.menuName}>
+                    <div className="font-semibold mb-2 capitalize">
+                      {group.menuName}
+                    </div>
+                    <div className="space-y-2 pl-2">
+                      {group.menuItems.map((item) => (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          onClick={() => setMobileOpen(false)}
+                          className="block text-sm"
+                        >
+                          {item.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )
               )}
-
-              {/* Industries */}
-              <button
-                className="w-full flex justify-between items-center font-medium"
-                onClick={() => {
-                  setIndustriesOpen(!industriesOpen)
-                  setSolutionsOpen(false)
-                  setCompanyOpen(false)
-                }}
-              >
-                Industries
-                <ChevronDown className={`transition ${industriesOpen ? "rotate-180" : ""}`} />
-              </button>
-
-              {industriesOpen && (
-                <div className="pl-4 space-y-2">
-                  {INDUSTRIES.map(item => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={() => setMobileOpen(false)}
-                      className="block text-sm"
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
-                </div>
-              )}
-
-              {/* Company */}
-              <button
-                className="w-full flex justify-between items-center font-medium"
-                onClick={() => {
-                  setCompanyOpen(!companyOpen)
-                  setSolutionsOpen(false)
-                  setIndustriesOpen(false)
-                }}
-              >
-                Company
-                <ChevronDown className={`transition ${companyOpen ? "rotate-180" : ""}`} />
-              </button>
-
-              {companyOpen && (
-                <div className="pl-4 space-y-2">
-                  {COMPANY.map(item => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={() => setMobileOpen(false)}
-                      className="block text-sm"
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
-                </div>
-              )}
-
-              {/* Static Links */}
-              <div className="pt-4 border-t font-medium">
-                <Link href="/blogs" onClick={() => setMobileOpen(false)} className="block py-2">
-                  Blogs
-                </Link>
-                <Link href="/resources" onClick={() => setMobileOpen(false)} className="block py-2">
-                  Resources
-                </Link>
-                <Link href="/contact" onClick={() => setMobileOpen(false)} className="block py-2">
-                  Contact
-                </Link>
-              </div>
             </div>
           </motion.div>
         )}

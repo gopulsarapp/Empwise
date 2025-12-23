@@ -8,10 +8,10 @@ export default function Page() {
   return (
     <>
       <HeaderTitle pageName="Governance" />
-              <IntegrisExperience
-                      order="left"
-                      pageName="aBoutPageItArchitecture"
-                    />
+      <IntegrisExperience
+        order="left"
+        pageName="aBoutPageItArchitecture"
+      />
       <DiscoverySection />
     </>
   );

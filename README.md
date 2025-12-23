@@ -104,3 +104,45 @@ Leadership
 our Founder
 our-locations
 our Partner
+
+
+
+http://192.168.1.45:3000/resources
+3
+http://192.168.1.45:3000/blogs
+3
+http://localhost:3000/
+3
+http://192.168.1.45:3000/services/managed-it
+3
+http://192.168.1.45:3000/services/cybersecurity
+
+http://192.168.1.45:3000/services/cloud
+2
+http://192.168.1.45:3000/services/governance
+5
+http://192.168.1.45:3000/services/advisory
+2
+http://192.168.1.45:3000/industries/highly-regulated-industries
+5 compomemnt
+http://192.168.1.45:3000/industries/community-banks
+8 componment
+
+http://192.168.1.45:3000/industries/legal
+7 compomemt
+http://192.168.1.45:3000/industries/manufacturing-it-services
+8
+
+
+Total Unique
+
+Industrial 1 compnemnt same but data different
+Industrial 1 compnemnt same but data different
+Industrial 1 compnemnt same but data different
+Industrial 1 compnemnt same but data different
+3
+
+insdurtial 7 compoment
+insdurtial 6 compoment
+
+2

@@ -17,6 +17,7 @@ export default function HomePage() {
       <IndustryRecognition />
       <ITPartnerAssessment />
       <IndustryExpertise />
+  
       <EnterpriseResources />
       <ClientRating />
       <IntegrisExperience order="right" pageName="homeAboutExperience"/>
