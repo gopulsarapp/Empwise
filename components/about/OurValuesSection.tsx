@@ -122,9 +122,7 @@ export default function OurValuesSection() {
                   className="
                     rounded-full
                     flex items-center justify-center
-                    bg-primary
-                    text-white
-                    shadow-lg
+                    text-white 
                     w-24 h-24
                     lg:w-20 lg:h-20
                   "
