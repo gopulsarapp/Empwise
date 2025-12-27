@@ -1,158 +1,200 @@
-Update contentful data solution 8 
+# Novotek MSP Website
+Next.js + Contentful (Axios API)
 
-1. Managed IT Infrastructure
+This repository contains the official **Novotek Managed Services Provider (MSP)** website built with **Next.js (App Router)** and **Contentful CMS**, using **Axios** for API communication.
 
-We manage your entire IT environment—servers, networks, and endpoints—so everything runs smoothly and securely.
-Proactive monitoring prevents issues before they disrupt operations.
-Our team ensures maximum uptime, stability, and scalable performance.
+The project is SEO-optimized, scalable, and designed so content teams can update website content without developer involvement.
 
-2. Managed Help Desk & End-User Support
+---
 
-Your employees get fast, reliable technical support whenever they need it.
-We handle troubleshooting, device setup, and software issues.
-This helps reduce downtime and boosts team productivity.
+## 🚀 Tech Stack
 
-3. Cybersecurity Services
+- Next.js 13+ (App Router)
+- TypeScript
+- Axios (API requests)
+- Contentful Headless CMS
+- Server Components
+- SEO Metadata API
 
-We protect your business with layered security—firewalls, endpoint security, threat detection, and 24/7 monitoring.
-Our team responds instantly to threats and prevents cyberattacks.
-We keep your data, systems, and reputation safe from evolving risks.
+---
 
-4. Cloud Services & Migration
+## 🔐 Environment Variables
 
-We help you move to the cloud and manage your cloud applications (Microsoft 365, Google Workspace, AWS, Azure).
-Our team optimizes performance, availability, and cost.
-You get a scalable, secure cloud environment tailored to your business.
+Create a `.env.local` file in the project root.
 
-5. Backup & Disaster Recovery (BDR)
+```env
+# ==================================================
+# 🌐 Site / Domain Configuration
+# ==================================================
+NEXT_PUBLIC_SITE_URL=https://www.novotek.com
+NEXT_PUBLIC_APP_NAME=Novotek
+NEXT_PUBLIC_LINKEDIN_URL=https://www.linkedin.com/company/novotek
 
-We implement automatic backups and secure offsite storage to protect your data.
-In case of an outage or disaster, we restore systems fast to minimize downtime.
-Your business remains resilient and operational—no matter what happens.
+# ==================================================
+# 📦 Contentful CMS (Delivery API)
+# ==================================================
+NEXT_PUBLIC_CONTENTFUL_URL=https://cdn.contentful.com/spaces/{SPACE_ID}/environments/{ENVIRONMENT_ID}/entries?access_token={ACCESS_TOKEN}
 
-6. Network Management & Security
-
-We design, monitor, and secure networks to ensure fast and reliable connectivity.
-Continuous performance optimization improves productivity.
-Your network stays protected from intrusions and unauthorized access.
-
-7. IT Compliance & Governance
-
-We help you meet industry standards such as HIPAA, GDPR, and SOC requirements.
-Our policies, controls, and audits reduce compliance risks.
-You stay fully aligned with legal and regulatory expectations.
-
-8. Technology Strategy & vCIO Services
-
-We provide strategic IT planning, budgeting, and roadmap development.
-Your business gets enterprise-level guidance without the cost of a full-time CIO.
-Our vCIO services align technology with your long-term goals.
-
-indurteires new Page 
-remonve nav profolio 
+# ==================================================
+# 🔍 SEO Configuration
+# ==================================================
+NEXT_PUBLIC_DEFAULT_META_TITLE=Novotek | Intelligent Technology Solutions
+NEXT_PUBLIC_DEFAULT_META_DESCRIPTION=Secure, compliant, and intelligent technology solutions designed for growth.
+NEXT_PUBLIC_OG_IMAGE=/og-image.png
 
 
-Addresss 
+# ==================================================
+# 🗺 Sitemap & Robots
+# ==================================================
+NEXT_PUBLIC_SITEMAP_PATH=/sitemap.xml
+NEXT_PUBLIC_ROBOTS_PATH=/robots.txt
 
 
-https://integrisit.com/services/managed-it/
-http://192.168.1.45:3000/services/managed-it 
-Full Page Update Managed it  
-9
+# ==================================================
+# 📊 Analytics (Optional)
+# ==================================================
+NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
+NEXT_PUBLIC_GTM_ID=GTM-XXXXXXX
 
-https://integrisit.com/industries/manufacturing-it-services/
-Full PAge 
-6
+```
 
-15 total 
+Replace `{SPACE_ID}`, `{ENVIRONMENT_ID}`, and `{ACCESS_TOKEN}` with your Contentful space ID, environment ID, and delivery access token.
 
+⚠️ Never commit `.env.local` to version control.
 
-pageName="leadership"
-
-# Headertitle
+---
 
 
-contact
-community-banks
-highly-regulated-industries
-legal
+## ✍️ Updating Content in Contentful
 
-our-partners
-resources
-Advisory
-cloud
-cybersecurity
-Governance
+1. Log in to Contentful
+2. Open your Space
+3. Choose a Content Type (Page, Blog, Service, Industry)
+4. Update content fields
+5. Click Publish
+6. Changes appear instantly on the website
 
+No code changes required.
 
+## 🌐 Global SEO Configuration
 
-# done
-manufacturing-it-services
-managedIt
-founders
-leadership
-our-locations
-about
+Global SEO is configured in the root layout.
 
-
-
-
-This page is complete 
-
-Contact 
-Leadership
-our Founder
-our-locations
-our Partner
-
-
-
-http://192.168.1.45:3000/resources
-3
-http://192.168.1.45:3000/blogs
-3
-http://localhost:3000/
-3
-http://192.168.1.45:3000/services/managed-it
-3
-http://192.168.1.45:3000/services/cybersecurity
-
-http://192.168.1.45:3000/services/cloud
-2
-http://192.168.1.45:3000/services/governance
-5
-http://192.168.1.45:3000/services/advisory
-2
-http://192.168.1.45:3000/industries/highly-regulated-industries
-5 compomemnt
-http://192.168.1.45:3000/industries/community-banks
-8 componment
-
-http://192.168.1.45:3000/industries/legal
-7 compomemt
-http://192.168.1.45:3000/industries/manufacturing-it-services
-8
+### `app/layout.tsx`
+```ts
+export const metadata = {
+  title: {
+    default: "Novotek | Intelligent Technology Solutions",
+    template: "%s | Novotek",
+  },
+  description:
+    "Novotek delivers secure, compliant, and intelligent technology solutions for modern businesses.",
+  metadataBase: new URL("https://www.novotek.com"),
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    type: "website",
+    siteName: "Novotek",
+    title: "Novotek",
+    description:
+      "AI-driven, secure, and scalable technology solutions.",
+    images: ["/og-image.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
+};
+```
 
 
-Total Unique
+## 🗺 Sitemap Configuration
 
-Industrial 1 compnemnt same but data different
-Industrial 1 compnemnt same but data different
-Industrial 1 compnemnt same but data different
-Industrial 1 compnemnt same but data different
-3
+The sitemap is automatically generated using Next.js Metadata Routes.
 
-insdurtial 7 compoment
-insdurtial 6 compoment
+### `app/sitemap.ts`
+```ts
+export default function sitemap() {
+  return [
+    {
+      url: "https://www.novotek.com",
+      lastModified: new Date(),
+    },
+  ];
+}
+```
 
-2
+### Access Sitemap
+```
+/sitemap.xml
+```
 
+---
 
+## 🤖 Robots.txt Configuration
 
-logo +
-nota 
-wrewrite 
+Robots.txt is generated dynamically to guide search engine crawlers.
 
+### `app/robots.ts`
+```ts
+export default function robots() {
+  return {
+    rules: {
+      userAgent: "*",
+      allow: "/",
+    },
+    sitemap: "https://www.novotek.com/sitemap.xml",
+  };
+}
+```
 
-Content - Scoail Media
+### Access Robots File
+```
+/robots.txt
+```
 
+---
+
+## 🧩 Structured Data (JSON-LD)
+
+Structured data helps search engines better understand your organization and improves search visibility.
+
+### Organization Schema Example
+
+```tsx
+<script
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      name: "Novotek",
+      url: "https://www.novotek.com",
+    }),
+  }}
+/>
+```
+
+---
+
+## 🏗 Local Development
+
+```bash
+npm install
+npm run dev
+```
+
+Visit: http://localhost:3000
+
+---
+
+## 🏢 About Novotek
+
+Novotek is a Managed Services Provider delivering secure, compliant, and intelligent technology solutions across regulated and growth-focused industries.
+
+---
+
+## 📄 License
+
+© Novotek. All rights reserved.

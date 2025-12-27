@@ -1,40 +1,52 @@
-import type { Metadata } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import Analytics from "@/components/Analytics";
 
-import Navbar from "@/components/layout/Navbar"
-import Footer from "@/components/layout/Footer"
+import JsonLd from "@/components/JsonLd";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 
-import "./globals.css"
+import "./globals.css";
 
 /* ================= Fonts ================= */
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
-})
+});
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
-})
+});
+
+/* ================= Env ================= */
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL!;
+const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME!;
+const DEFAULT_TITLE = process.env.NEXT_PUBLIC_DEFAULT_META_TITLE!;
+const DEFAULT_DESCRIPTION =
+  process.env.NEXT_PUBLIC_DEFAULT_META_DESCRIPTION!;
+const OG_IMAGE = process.env.NEXT_PUBLIC_OG_IMAGE!;
 
 /* ================= Metadata (STATIC SEO) ================= */
 
 export const metadata: Metadata = {
-  title: "Novotek AI Solutions",
-  description:
-    "Novotek.ai helps businesses innovate with AI-driven solutions, intelligent automation, and data insights designed for growth and efficiency.",
-
-  keywords:
-    "Novotek AI, AI solutions, artificial intelligence, machine learning, business automation, AI consulting, data intelligence",
-
-  alternates: {
-    canonical: "https://www.novotek.ai/",
+  title: {
+    default: DEFAULT_TITLE,
+    template: `%s | ${APP_NAME}`,
   },
+  description: DEFAULT_DESCRIPTION,
+
+  metadataBase: new URL(SITE_URL),
 
   robots: {
     index: true,
     follow: true,
+  },
+
+  alternates: {
+    canonical: SITE_URL,
   },
 
   icons: {
@@ -44,46 +56,46 @@ export const metadata: Metadata = {
   },
 
   openGraph: {
-    title: "Novotek.ai – Intelligent AI Solutions",
-    description:
-      "AI-driven automation, analytics, and scalable technology solutions for modern businesses.",
-    url: "https://www.novotek.ai/",
-    siteName: "Novotek.ai",
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+    url: SITE_URL,
+    siteName: APP_NAME,
     type: "website",
     images: [
       {
-        url: "https://www.novotek.ai/og.jpg",
+        url: `${SITE_URL}${OG_IMAGE}`,
         width: 1200,
         height: 630,
-        alt: "Novotek.ai",
+        alt: APP_NAME,
       },
     ],
   },
 
   twitter: {
     card: "summary_large_image",
-    title: "Novotek",
-    description: "AI solutions for business growth.",
-    images: ["https://www.novotek.ai/og.jpg"],
+    title: APP_NAME,
+    description: DEFAULT_DESCRIPTION,
+    images: [`${SITE_URL}${OG_IMAGE}`],
   },
-}
+};
 
 /* ================= Root Layout ================= */
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
-      >
+      > <Analytics />
+        <JsonLd />
         <Navbar />
         <main className="flex-1 mt-[110px]">{children}</main>
         <Footer />
       </body>
     </html>
-  )
+  );
 }
