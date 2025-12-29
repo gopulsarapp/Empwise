@@ -109,7 +109,7 @@ export default function ContactForm() {
     >
       <Card className="rounded-2xl shadow-lg">
         <CardContent className="p-8">
-          <h3 className="text-2xl font-bold mb-6">{data.formTitle}</h3>
+          <h3 className="text-4xl font-bold mb-6">{data.formTitle}</h3>
           <h3 className="text-2xl font-bold mb-6">{data.title}</h3>
 
           <form onSubmit={handleSubmit} className="space-y-6">
