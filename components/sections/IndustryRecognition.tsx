@@ -9,8 +9,6 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "@/components/ui/carousel"
 
 /* -------------------------------------------------------------------------- */
@@ -153,10 +151,8 @@ export default function IndustryRecognition() {
           ))}
         </CarouselContent>
 
-        {/* Navigation arrows */}
-        <CarouselPrevious className="hidden md:flex" />
-
-      <CarouselNext className="hidden md:flex" />
+  
+  
       </Carousel>
     </section>
   )
