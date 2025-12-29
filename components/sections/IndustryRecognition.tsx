@@ -154,8 +154,9 @@ export default function IndustryRecognition() {
         </CarouselContent>
 
         {/* Navigation arrows */}
-        <CarouselPrevious />
-        <CarouselNext />
+        <CarouselPrevious className="hidden md:flex" />
+
+      <CarouselNext className="hidden md:flex" />
       </Carousel>
     </section>
   )
