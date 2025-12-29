@@ -19,11 +19,12 @@ type BookFormFields = {
   emailAddress: string
   phoneNumber: string
   companyName: string
-  jobtitle: string
+  jobtitle?: string
   aboutUs: string
   message: string
   messageText: string
   buttonText: string
+  formTitle: string
 }
 
 type ContentfulResponse = {
@@ -108,6 +109,7 @@ export default function ContactForm() {
     >
       <Card className="rounded-2xl shadow-lg">
         <CardContent className="p-8">
+          <h3 className="text-2xl font-bold mb-6">{data.formTitle}</h3>
           <h3 className="text-2xl font-bold mb-6">{data.title}</h3>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -151,7 +153,6 @@ export default function ContactForm() {
               <Input
                 name="jobTitle"
                 placeholder={data.jobtitle}
-                required
               />
             </div>
 
