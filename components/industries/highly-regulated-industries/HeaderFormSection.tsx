@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import axios from "axios"
 import { motion } from "framer-motion"
-import ContactForm from "@/components/Contact/ContactForm"
+// import ContactForm from "@/components/Contact/ContactForm"
 
 /* ------------------ Types ------------------ */
 
@@ -70,7 +70,7 @@ export default function HeaderFormSection({
 
   return (
     <section className="w-full bg-background py-24">
-      <div className="mx-auto max-w-[1440px] px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+      <div className="mx-auto max-w-[1440px] px-6 grid grid-cols-1 lg:grid-cols-1 gap-16 items-start">
 
         {/* TEXT */}
         <motion.div
@@ -79,11 +79,11 @@ export default function HeaderFormSection({
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">
+          <h1 className="text-5xl text-center md:text-5xl font-bold mb-6">
             {data.title}
           </h1>
 
-          <div className="space-y-4 text-muted-foreground leading-relaxed">
+          <div className="text-primary-900 text-muted-foreground space-y-4 leading-relaxed">
             {data.paragraph
               .trim()
               .split("\n\n")
@@ -91,17 +91,18 @@ export default function HeaderFormSection({
                 <p key={index}>{para}</p>
               ))}
           </div>
+
         </motion.div>
 
         {/* FORM */}
-        <motion.div
+        {/*   <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.1 }}
         >
-          <ContactForm />
-        </motion.div>
+         <ContactForm /> 
+        </motion.div>*/}
 
       </div>
     </section>

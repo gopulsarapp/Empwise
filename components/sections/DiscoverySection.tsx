@@ -4,6 +4,8 @@ import { motion, type Variants } from "framer-motion"
 import { useEffect, useState } from "react"
 import axios from "axios"
 import ContactForm from "../Contact/ContactForm"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
 
 /* ------------------ Types ------------------ */
 
@@ -120,20 +122,45 @@ export default function DiscoverySection() {
           </h2>
 
           <p className="text-base text-muted-foreground leading-relaxed whitespace-pre-line">
-            {data.paragraph
-              ?.replace(/\s+$/, "")
-              .split("\n")
-              .map((line, index) => (
-                <span key={index}>
-                  {line}
-                  <br />
-                </span>
-              ))}
+
+
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={{
+                h3: ({ children }) => (
+                  <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-2">
+                    {children}
+                  </h3>
+                ),
+                p: ({ children }) => (
+                  <p className="mb-4 text-gray-600">
+                    {children}
+                  </p>
+                ),
+                strong: ({ children }) => (
+                  <strong className="font-semibold text-gray-900">
+                    {children}
+                  </strong>
+                ),
+                ul: ({ children }) => (
+                  <ul className="list-disc pl-5 mb-4 space-y-1">
+                    {children}
+                  </ul>
+                ),
+                li: ({ children }) => (
+                  <li className="text-gray-600">
+                    {children}
+                  </li>
+                ),
+              }}
+            >
+              {data.paragraph}
+            </ReactMarkdown>
           </p>
         </motion.div>
 
         {/* Form */}
-        <ContactForm/>
+        <ContactForm />
       </motion.div>
     </motion.section>
   )

@@ -4,6 +4,8 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 import { motion, type Variants } from "framer-motion"
 import { cn } from "@/lib/utils"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
 
 /* ------------------ Types ------------------ */
 
@@ -149,12 +151,29 @@ export default function IntegrisExperience({
             </h2>
 
             <div className="space-y-4 text-muted-foreground leading-relaxed">
-              {data.description
-                .replace(/\s+$/, "")
-                .split("\n\n")
-                .map((para, index) => (
-                  <p key={index}>{para}</p>
-                ))}
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    h3: ({ children }) => (
+                      <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-2">
+                        {children}
+                      </h3>
+                    ),
+                    p: ({ children }) => (
+                      <p className="text-gray-600 mb-4">
+                        {children}
+                      </p>
+                    ),
+                    strong: ({ children }) => (
+                      <strong className="font-semibold text-gray-900">
+                        {children}
+                      </strong>
+                    ),
+                    
+                  }}
+                >
+                  {data.description}
+                </ReactMarkdown>
             </div>
           </motion.div>
         </div>

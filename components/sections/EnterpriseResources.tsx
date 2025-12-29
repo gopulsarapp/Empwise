@@ -148,7 +148,7 @@ export default function EnterpriseResources() {
   remarkPlugins={[remarkGfm]}
   components={{
     h3: ({ children }) => (
-      <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-2">
+      <h3 className="text-xl font-semibold text-black mt-6 mb-2">
         {children}
       </h3>
     ),
@@ -168,14 +168,14 @@ export default function EnterpriseResources() {
 </ReactMarkdown>
 
             </div>
-
+           {buttonName === " " ? null : (
             <div className="mt-8">
               <Button className="bg-red-600 hover:bg-red-700" asChild>
-                <a href={buttonUrl}>
+                <a href={buttonUrl === " " ? "#" : buttonUrl} target="_blank" rel="noopener noreferrer">
                   {buttonName}
                 </a>
               </Button>
-            </div>
+            </div>)}
           </motion.div>
 
           {/* Background Image */}

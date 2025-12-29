@@ -99,14 +99,26 @@ export default function Navbar() {
   const getMenu = (name: string) =>
     data.menus.find((m) => m.menuName === name)?.menuItems ?? []
 
+  const rawPhone = data.phone.replace(/\D/g, "")
+
+  const formattedPhone = rawPhone.replace(
+    /^1?(\d{3})(\d{3})(\d{4})$/,
+    "+1 ($1) $2-$3"
+  )
+
   return (
     <header className="fixed top-0 left-0 z-50 w-full bg-white border-b">
       {/* ================= Top Bar ================= */}
       <div className="border-b">
+
         <div className="mx-auto max-w-[1440px] px-6 py-2 flex justify-end gap-6 text-sm">
-          <span className="font-medium">
-            {data.phone.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3")}
-          </span>
+          <Link
+            href={`tel:${rawPhone}`}
+            className="font-medium hover:underline"
+          >
+            {formattedPhone}
+          </Link>
+
           <Link href={data.clientSupport}>Client Support</Link>
         </div>
       </div>
@@ -139,9 +151,8 @@ export default function Navbar() {
               >
                 {menu.charAt(0).toUpperCase() + menu.slice(1)}
                 <ChevronDown
-                  className={`transition ${
-                    openMenu === menu ? "rotate-180" : ""
-                  }`}
+                  className={`transition ${openMenu === menu ? "rotate-180" : ""
+                    }`}
                 />
               </button>
 

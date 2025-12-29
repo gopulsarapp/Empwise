@@ -13,12 +13,13 @@ type ContactPageFields = {
   contactPage: string
   title: string
   desc: string
-  salesInquiriesText: string
+  salesinquiriesPhone: string
   salesInquiriesEmail: string
   salesInquiriesPhone: string
-  buttonJson: {
-    clientSupport: string
-    ourLocations: string
+  salesInquiriesText: string
+  buttonJson?: {
+    clientSupport?: string
+    ourLocations?: string
   }
 }
 
@@ -41,6 +42,7 @@ export default function ContactSection() {
         const item = res.data.items[0]
         if (item) {
           setData(item.fields)
+          console.log("ContactSection data:", item.fields)
         }
       } catch (error) {
         console.error("ContactSection fetch error:", error)
@@ -52,6 +54,10 @@ export default function ContactSection() {
 
   /* Hide if no data */
   if (!data) return null
+
+  const phone = data.salesInquiriesPhone || data.salesinquiriesPhone;
+  const tel = phone.replace(/[^\d+]/g, "")
+
 
   return (
     <section className="mx-auto max-w-[1440px] w-full py-24 bg-background">
@@ -74,12 +80,16 @@ export default function ContactSection() {
 
           <div className="space-y-2">
             <p className="font-medium">
-              {data.salesInquiriesText}{" "}
-              <span>{data.salesInquiriesPhone}</span>
+              {data.salesinquiriesPhone}{" "}
+              <Link href={`tel:${tel}`} className="text-primary underline">
+              {phone}
+            </Link>
             </p>
 
+          
             <p>
-              Sales:{" "}
+
+              {data.salesInquiriesText}{" "}
               <Link
                 href={`mailto:${data.salesInquiriesEmail}`}
                 className="text-primary underline"
@@ -89,14 +99,20 @@ export default function ContactSection() {
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-4 pt-5">
-            <Button variant="destructive">
-              {data.buttonJson.clientSupport}
-            </Button>
 
-            <Button variant="destructive">
-              {data.buttonJson.ourLocations}
-            </Button>
+
+          <div className="flex flex-wrap gap-4 pt-5">
+            {data.buttonJson && data.buttonJson.ourLocations && (
+
+              <Button variant="destructive">
+                {data.buttonJson.clientSupport}
+              </Button>)}
+
+            {data.buttonJson && data.buttonJson.ourLocations && (
+              <Button variant="destructive">
+                {data.buttonJson.ourLocations}
+              </Button>
+            )}
           </div>
         </motion.div>
 

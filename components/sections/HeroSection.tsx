@@ -4,6 +4,8 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 import { motion, type Variants } from "framer-motion"
 import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation"
+
 
 /* ================= Types ================= */
 
@@ -71,6 +73,7 @@ const buttonsVariants: Variants = {
 /* ================= Component ================= */
 
 export default function HeroSection() {
+  const router = useRouter();
   const [data, setData] = useState<HeroData | null>(null)
 
   useEffect(() => {
@@ -154,7 +157,10 @@ export default function HeroSection() {
             )}
 
             {data.secondaryBtn && (
-              <Button variant="secondary">
+              <Button
+                variant="secondary"
+                onClick={() => router.push("/contact")}
+              >
                 {data.secondaryBtn}
               </Button>
             )}

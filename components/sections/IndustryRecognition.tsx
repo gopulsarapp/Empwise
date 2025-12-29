@@ -1,12 +1,17 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import Image from "next/image"
-import clsx from "clsx"
-import { motion, type Variants } from "framer-motion"
 import axios from "axios"
+import Autoplay from "embla-carousel-autoplay"
 
-const ITEM_WIDTH = 220
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
 
 /* -------------------------------------------------------------------------- */
 /*                                   Types                                    */
@@ -52,49 +57,17 @@ type ContentfulResponse = {
 }
 
 /* -------------------------------------------------------------------------- */
-/*                              Framer Variants                               */
-/* -------------------------------------------------------------------------- */
-
-const containerVariants: Variants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.7,
-      ease: "easeOut",
-      staggerChildren: 0.1,
-    },
-  },
-}
-
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.4,
-      ease: "easeOut",
-    },
-  },
-}
-
-/* -------------------------------------------------------------------------- */
 /*                               Component                                    */
 /* -------------------------------------------------------------------------- */
 
 export default function IndustryRecognition() {
-  const scrollRef = useRef<HTMLDivElement>(null)
-
-  const [title, setTitle] = useState<string>("")
+  const [title, setTitle] = useState("")
   const [logos, setLogos] = useState<Logo[]>([])
-  const [active, setActive] = useState<number>(0)
-  const [loading, setLoading] = useState<boolean>(true)
+  const [loading, setLoading] = useState(true)
 
   /* ------------------------------ Fetch Data ------------------------------ */
   useEffect(() => {
-    async function fetchData(): Promise<void> {
+    async function fetchData() {
       try {
         const res = await axios.get<ContentfulResponse>(
           `${process.env.NEXT_PUBLIC_CONTENTFUL_URL}&content_type=industryRecognition`
@@ -105,24 +78,18 @@ export default function IndustryRecognition() {
 
         setTitle(item.fields.title)
 
-        const mappedLogos: Logo[] = item.fields.image
-          .map((img: ContentfulImageLink): Logo | null => {
-            const asset = assets.find(
-              (a: ContentfulAsset) => a.sys.id === img.sys.id
-            )
-
+        const mapped: Logo[] = item.fields.image
+          .map((img) => {
+            const asset = assets.find((a) => a.sys.id === img.sys.id)
             if (!asset) return null
-
             return {
               src: `https:${asset.fields.file.url}`,
               alt: asset.fields.title,
             }
           })
-          .filter((logo): logo is Logo => logo !== null)
+          .filter(Boolean) as Logo[]
 
-        setLogos(mappedLogos)
-      } catch (error) {
-        console.error("Contentful fetch error:", error)
+        setLogos(mapped)
       } finally {
         setLoading(false)
       }
@@ -131,108 +98,65 @@ export default function IndustryRecognition() {
     fetchData()
   }, [])
 
-  /* -------------------------- Auto Scroll (Mobile) ------------------------- */
-  useEffect(() => {
-    if (loading) return
-    if (typeof window === "undefined") return
-    if (!scrollRef.current || logos.length === 0) return
-
-    const isMobile = window.matchMedia("(max-width: 767px)").matches
-    if (!isMobile) return
-
-    const container = scrollRef.current
-
-    const interval = setInterval(() => {
-      const maxScroll =
-        container.scrollWidth - container.clientWidth
-
-      if (container.scrollLeft >= maxScroll) {
-        container.scrollTo({ left: 0, behavior: "smooth" })
-      } else {
-        container.scrollBy({ left: ITEM_WIDTH, behavior: "smooth" })
-      }
-    }, 3000)
-
-    return () => clearInterval(interval)
-  }, [logos, loading])
-
-  /* ---------------------------- Scroll Handler ----------------------------- */
-  const handleScroll = (): void => {
-    if (!scrollRef.current) return
-
-    const index = Math.round(
-      scrollRef.current.scrollLeft / ITEM_WIDTH
-    )
-
-    setActive(Math.min(index, logos.length - 1))
-  }
-
-  /* ------------------------------- Loading -------------------------------- */
   if (loading) {
-    return (
-      <section className="w-full py-16 bg-[#3a2744] text-white text-center">
-      </section>
-    )
+    return <section className="py-16 bg-[#3a2744]" />
   }
 
-  /* -------------------------------- Render -------------------------------- */
+  /* -------------------------------------------------------------------------- */
+  /*                                  Render                                    */
+  /* -------------------------------------------------------------------------- */
+
   return (
-    <motion.section
-      className="w-full bg-[#3a2744] text-white py-16 overflow-hidden"
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-    >
+    <section className="w-full bg-[#3a2744] text-white py-16">
       {title && (
-        <motion.h2
-          variants={itemVariants}
-          className="text-center text-xl md:text-2xl font-semibold mb-10 px-6"
-        >
+        <h2 className="text-center text-xl md:text-2xl font-semibold mb-10">
           {title}
-        </motion.h2>
+        </h2>
       )}
 
-      <motion.div
-        ref={scrollRef}
-        onScroll={handleScroll}
-        className={clsx(
-          "flex md:grid md:grid-cols-6 items-center gap-14 px-6",
-          "overflow-x-auto md:overflow-visible",
-          "snap-x snap-mandatory md:snap-none scrollbar-hide"
-        )}
+      <Carousel
+        opts={{
+          align: "start",
+          loop: true,
+        }}
+        plugins={[
+          Autoplay({
+            delay: 2500,
+            stopOnInteraction: false,
+            stopOnMouseEnter: true,
+          }),
+        ]}
+        className="w-full max-w-[1440px] mx-auto px-6"
       >
-        {logos.map((logo, index) => (
-          <motion.div
-            key={`${logo.alt}-${index}`}
-            variants={itemVariants}
-            className="relative min-w-[220px] md:min-w-0 h-[72px] snap-center flex items-center justify-center"
-          >
-            <Image
-              src={logo.src}
-              alt={logo.alt}
-              fill
-              className="object-contain"
-              unoptimized
-            />
-          </motion.div>
-        ))}
-      </motion.div>
+        <CarouselContent>
+          {logos.map((logo, index) => (
+            <CarouselItem
+              key={index}
+              className="
+                basis-full            /* Mobile: 1 */
+                sm:basis-1/2
+                md:basis-1/3
+                lg:basis-1/5           /* Desktop: 5 */
+                flex justify-center
+              "
+            >
+              <div className="relative w-[220px] h-[72px] flex items-center justify-center">
+                <Image
+                  src={logo.src}
+                  alt={logo.alt}
+                  fill
+                  className="object-contain"
+                  unoptimized
+                />
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
 
-      {/* Pagination Dots */}
-      <div className="mt-8 flex justify-center gap-2 md:hidden">
-        {logos.map((_, i) => (
-          <motion.span
-            key={i}
-            animate={
-              active === i
-                ? { scale: 1.4, opacity: 1 }
-                : { scale: 1, opacity: 0.5 }
-            }
-            transition={{ duration: 0.3 }}
-            className="h-2 w-2 rounded-full bg-white"
-          />
-        ))}
-      </div>
-    </motion.section>
+        {/* Navigation arrows */}
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
+    </section>
   )
 }
