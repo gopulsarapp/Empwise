@@ -1,9 +1,12 @@
 "use client"
 
-import { motion, type Variants } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import axios from "axios"
 import { useEffect, useState } from "react"
+import axios from "axios"
+import { motion, type Variants } from "framer-motion"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
+
+import { Button } from "@/components/ui/button"
 
 /* =======================
    Types
@@ -33,7 +36,7 @@ type ContentfulEntryFields = {
   paragraph: string
   buttonTitle: string
   buttonUrl: string
-  image: ContentfulImageLink[]
+  image: ContentfulImageLink
 }
 
 type ContentfulResponse = {
@@ -46,7 +49,7 @@ type ContentfulResponse = {
 }
 
 /* =======================
-   Framer Motion
+   Framer Motion Variants
 ======================= */
 
 const containerVariants: Variants = {
@@ -83,36 +86,35 @@ export default function EnterpriseResources() {
   const [image, setImage] = useState("")
   const [loading, setLoading] = useState(true)
 
-useEffect(() => {
-  async function fetchData() {
-    try {
-      const res = await axios.get<ContentfulResponse>(
-        `${process.env.NEXT_PUBLIC_CONTENTFUL_URL}&content_type=enterpriseResources`
-      )
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await axios.get<ContentfulResponse>(
+          `${process.env.NEXT_PUBLIC_CONTENTFUL_URL}&content_type=enterpriseResources`
+        )
 
-      const item = res.data.items[0]
+        const item = res.data.items[0]
 
-      setTitle(item.fields.title)
-      setSubtitle(item.fields.subtitle)
-      setParagraph(item.fields.paragraph)
-      setButtonName(item.fields.buttonTitle)
-      setButtonUrl(item.fields.buttonUrl)
+        setTitle(item.fields.title)
+        setSubtitle(item.fields.subtitle)
+        setParagraph(item.fields.paragraph)
+        setButtonName(item.fields.buttonTitle)
+        setButtonUrl(item.fields.buttonUrl)
 
-      // ✅ Single image (first asset)
-      const asset = res.data.includes?.Asset?.[0]
-      if (asset) {
-        setImage(`https:${asset.fields.file.url}`)
+        // Single image from includes.Asset
+        const asset = res.data.includes?.Asset?.[0]
+        if (asset) {
+          setImage(`https:${asset.fields.file.url}`)
+        }
+      } catch (error) {
+        console.error("Contentful fetch error:", error)
+      } finally {
+        setLoading(false)
       }
-    } catch (error) {
-      console.error("Contentful fetch error:", error)
-    } finally {
-      setLoading(false)
     }
-  }
 
-  fetchData()
-}, [])
-
+    fetchData()
+  }, [])
 
   if (loading) return null
 
@@ -126,6 +128,7 @@ useEffect(() => {
         viewport={{ once: true, amount: 0.3 }}
       >
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-stretch">
+          
           {/* Text Card */}
           <motion.div
             variants={itemVariants}
@@ -135,19 +138,38 @@ useEffect(() => {
               {title}
             </h2>
 
-            <p className="text-lg mb-6">
+            <p className="text-lg text-muted-foreground mb-6">
               {subtitle}
             </p>
 
-            <div className="space-y-5 text-muted-foreground leading-relaxed">
-              <p>{paragraph}</p>
+            {/* Markdown Content */}
+            <div className="leading-relaxed">
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  h3: ({ children }) => (
+                    <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-2">
+                      {children}
+                    </h3>
+                  ),
+                  p: ({ children }) => (
+                    <p className="text-gray-600 mb-4">
+                      {children}
+                    </p>
+                  ),
+                  strong: ({ children }) => (
+                    <strong className="font-semibold text-gray-900">
+                      {children}
+                    </strong>
+                  ),
+                }}
+              >
+                {paragraph}
+              </ReactMarkdown>
             </div>
 
             <div className="mt-8">
-              <Button
-                className="bg-red-600 hover:bg-red-700"
-                asChild
-              >
+              <Button className="bg-red-600 hover:bg-red-700" asChild>
                 <a href={buttonUrl}>
                   {buttonName}
                 </a>

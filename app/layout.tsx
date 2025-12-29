@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Analytics from "@/components/Analytics";
+import { Toaster } from "sonner"
 
 import JsonLd from "@/components/JsonLd";
 import Navbar from "@/components/layout/Navbar";
@@ -94,6 +95,7 @@ export default function RootLayout({
         <JsonLd />
         <Navbar />
         <main className="flex-1 mt-[110px]">{children}</main>
+         <Toaster richColors position="top-right" />
         <Footer />
       </body>
     </html>
