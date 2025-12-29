@@ -144,28 +144,29 @@ export default function EnterpriseResources() {
 
             {/* Markdown Content */}
             <div className="leading-relaxed">
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                components={{
-                  h3: ({ children }) => (
-                    <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-2">
-                      {children}
-                    </h3>
-                  ),
-                  p: ({ children }) => (
-                    <p className="text-gray-600 mb-4">
-                      {children}
-                    </p>
-                  ),
-                  strong: ({ children }) => (
-                    <strong className="font-semibold text-gray-900">
-                      {children}
-                    </strong>
-                  ),
-                }}
-              >
-                {paragraph}
-              </ReactMarkdown>
+             <ReactMarkdown
+  remarkPlugins={[remarkGfm]}
+  components={{
+    h3: ({ children }) => (
+      <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-2">
+        {children}
+      </h3>
+    ),
+    p: ({ children }) => (
+      <p className="text-gray-600 mb-4">
+        {children}
+      </p>
+    ),
+    strong: ({ children }) => (
+      <strong className="font-semibold text-gray-900">
+        {children}
+      </strong>
+    ),
+  }}
+>
+  {paragraph}
+</ReactMarkdown>
+
             </div>
 
             <div className="mt-8">

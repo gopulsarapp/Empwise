@@ -4,6 +4,8 @@ import Image from "next/image"
 import { motion, type Variants } from "framer-motion"
 import axios from "axios"
 import { useEffect, useState } from "react"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
 
 /* =======================
    Types (Contentful)
@@ -108,7 +110,7 @@ export default function IndustryExpertise() {
 
         const mappedIndustries: Industry[] =
           item.fields.industrySpecificImage
-            .map((imgLink: ContentfulImageLink) => {
+            .map((imgLink) => {
               const asset = assets.find(
                 (a) => a.sys.id === imgLink.sys.id
               )
@@ -138,6 +140,7 @@ export default function IndustryExpertise() {
   return (
     <section className="w-full bg-white py-24">
       <div className="mx-auto max-w-[1440px] px-6 grid grid-cols-1 lg:grid-cols-2 gap-16">
+
         {/* Text */}
         <motion.div
           variants={textVariants}
@@ -149,13 +152,48 @@ export default function IndustryExpertise() {
             {title}
           </h2>
 
-          <p className="text-lg mb-6 max-w-md">
-            {subtitle}
-          </p>
+          {/* Subtitle (Markdown enabled if needed) */}
+          <div className="text-lg mb-6 max-w-md">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {subtitle}
+            </ReactMarkdown>
+          </div>
 
-          <p className="text-muted-foreground max-w-md leading-relaxed">
-            {paragraph}
-          </p>
+          {/* Paragraph / Main Content (### + bold supported) */}
+          <div className="max-w-md leading-relaxed text-muted-foreground">
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={{
+                h3: ({ children }) => (
+                  <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-2">
+                    {children}
+                  </h3>
+                ),
+                p: ({ children }) => (
+                  <p className="mb-4 text-gray-600">
+                    {children}
+                  </p>
+                ),
+                strong: ({ children }) => (
+                  <strong className="font-semibold text-gray-900">
+                    {children}
+                  </strong>
+                ),
+                ul: ({ children }) => (
+                  <ul className="list-disc pl-5 mb-4 space-y-1">
+                    {children}
+                  </ul>
+                ),
+                li: ({ children }) => (
+                  <li className="text-gray-600">
+                    {children}
+                  </li>
+                ),
+              }}
+            >
+              {paragraph}
+            </ReactMarkdown>
+          </div>
         </motion.div>
 
         {/* Cards */}
