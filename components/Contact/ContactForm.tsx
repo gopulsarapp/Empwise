@@ -36,7 +36,7 @@ export default function ContactForm() {
   const [data, setData] = useState<BookFormFields | null>(null)
   const [loading, setLoading] = useState(false)
 
-  /* -------- Fetch Contentful Form Content -------- */
+  /* -------- Fetch Contentful Data -------- */
 
   useEffect(() => {
     async function fetchForm() {
@@ -44,24 +44,23 @@ export default function ContactForm() {
         const res = await axios.get<ContentfulResponse>(
           `${process.env.NEXT_PUBLIC_CONTENTFUL_URL}&content_type=bookForm`
         )
-
         setData(res.data.items[0]?.fields ?? null)
-      } catch {
-        console.error("Failed to load contact form content")
+      } catch (error) {
+        console.error("Failed to load contact form content", error)
       }
     }
 
     fetchForm()
   }, [])
 
-  /* -------- Submit Handler -------- */
+  /* -------- Submit Handler (Axios) -------- */
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     if (loading) return
 
     setLoading(true)
-    const loadingToast = toast.loading("Sending message...")
+    const toastId = toast.loading("Sending message...")
 
     const formData = new FormData(e.currentTarget)
     formData.append(
@@ -70,31 +69,31 @@ export default function ContactForm() {
     )
 
     try {
-      const res = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        body: formData,
-      })
+      const res = await axios.post(
+        "https://api.web3forms.com/submit",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
 
-      const result = await res.json()
-
-      if (result.success) {
-        toast.success("Message sent successfully!", { id: loadingToast })
+      if (res.data.success) {
+        toast.success("Message sent successfully!", { id: toastId })
         e.currentTarget.reset()
       } else {
-        toast.error("Submission failed. Please try again.", {
-          id: loadingToast,
-        })
+        toast.error("Submission failed. Please try again.", { id: toastId })
       }
-    } catch {
-      toast.error("Something went wrong. Try again later.", {
-        id: loadingToast,
-      })
+    } catch (error) {
+      console.error("Form submit error:", error)
+      toast.error("Something went wrong. Try again later.", { id: toastId })
     } finally {
       setLoading(false)
     }
   }
 
-  /* -------- Hide Until Data Loads -------- */
+  /* -------- Hide Until Loaded -------- */
 
   if (!data) return null
 
@@ -112,11 +111,21 @@ export default function ContactForm() {
           <h3 className="text-2xl font-bold mb-6">{data.title}</h3>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Name */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Input name="firstName" placeholder={data.firstName} required />
-              <Input name="lastName" placeholder={data.lastName} required />
+              <Input
+                name="firstName"
+                placeholder={data.firstName}
+                required
+              />
+              <Input
+                name="lastName"
+                placeholder={data.lastName}
+                required
+              />
             </div>
 
+            {/* Email & Phone */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Input
                 type="email"
@@ -124,22 +133,43 @@ export default function ContactForm() {
                 placeholder={data.emailAddress}
                 required
               />
-              <Input name="phone" placeholder={data.phoneNumber} />
+              <Input
+                type="tel"
+                name="phone"
+                placeholder={data.phoneNumber}
+                required
+              />
             </div>
 
+            {/* Company & Job */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Input name="company" placeholder={data.companyName} required />
-              <Input name="jobTitle" placeholder={data.jobtitle} />
+              <Input
+                name="company"
+                placeholder={data.companyName}
+                required
+              />
+              <Input
+                name="jobTitle"
+                placeholder={data.jobtitle}
+                required
+              />
             </div>
 
-            <Input name="about" placeholder={data.aboutUs} required />
+            {/* About */}
+            <Input
+              name="about"
+              placeholder={data.aboutUs}
+              required
+            />
 
+            {/* Helper Text */}
             {data.messageText && (
               <p className="text-sm text-muted-foreground whitespace-pre-line">
                 {data.messageText.trim()}
               </p>
             )}
 
+            {/* Message */}
             <Textarea
               name="message"
               placeholder={data.message.trim()}
@@ -147,6 +177,7 @@ export default function ContactForm() {
               required
             />
 
+            {/* Submit */}
             <div className="flex justify-end">
               <Button type="submit" size="lg" disabled={loading}>
                 {loading ? "Sending..." : data.buttonText}
