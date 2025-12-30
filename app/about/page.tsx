@@ -13,13 +13,10 @@ export default function Page() {
         <>
             <HeaderTitle pageName="about" />
             <IndustryRecognition />
-
             <CompetitiveEdgeSection />
             <IntegrisExperience order="right" pageName="homeAboutExperience" />
             <OurStorySection />
             <OurValuesSection />
-
-
             <DiscoverySection />
 
         </>

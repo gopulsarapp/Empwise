@@ -16,11 +16,9 @@ type ExperienceData = {
 }
 
 interface ExperienceProps {
-  order?: "left" | "right",
-  pageName:string
+  order?: "left" | "right"
+  pageName: string
 }
-
-
 
 type ContentfulResponse = {
   items: Array<{
@@ -45,7 +43,22 @@ type ContentfulResponse = {
   }
 }
 
-/* ------------------ Animations ------------------ */
+/* ------------------ TOP → BOTTOM ANIMATIONS ------------------ */
+
+const sectionVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    y: -50,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.9,
+      ease: "easeOut",
+    },
+  },
+}
 
 const containerVariants: Variants = {
   hidden: {},
@@ -57,25 +70,16 @@ const containerVariants: Variants = {
 }
 
 const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 40 },
+  hidden: {
+    opacity: 0,
+    y: -30,
+  },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
       duration: 0.6,
-      ease: [0.16, 1, 0.3, 1],
-    },
-  },
-}
-
-const bgVariants: Variants = {
-  hidden: { opacity: 0, scale: 1.05 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: {
-      duration: 1.2,
-      ease: [0.16, 1, 0.3, 1],
+      ease: "easeOut",
     },
   },
 }
@@ -83,7 +87,8 @@ const bgVariants: Variants = {
 /* ------------------ Component ------------------ */
 
 export default function IntegrisExperience({
-  order = "right",pageName
+  order = "right",
+  pageName,
 }: ExperienceProps) {
   const [data, setData] = useState<ExperienceData | null>(null)
 
@@ -124,7 +129,7 @@ export default function IntegrisExperience({
     <motion.section
       className="relative w-full min-h-[520px] lg:min-h-[640px] bg-cover bg-center"
       style={{ backgroundImage: `url(${data.image})` }}
-      variants={bgVariants}
+      variants={sectionVariants}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true }}
@@ -150,31 +155,28 @@ export default function IntegrisExperience({
               {data.title}
             </h2>
 
-            <div className="space-y-4 text-muted-foreground leading-relaxed">
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm]}
-                  components={{
-                    h3: ({ children }) => (
-                      <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-2">
-                        {children}
-                      </h3>
-                    ),
-                    p: ({ children }) => (
-                      <p className="text-gray-600 mb-4">
-                        {children}
-                      </p>
-                    ),
-                    strong: ({ children }) => (
-                      <strong className="font-semibold text-gray-900">
-                        {children}
-                      </strong>
-                    ),
-                    
-                  }}
-                >
-                  {data.description}
-                </ReactMarkdown>
-            </div>
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={{
+                h3: ({ children }) => (
+                  <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-2">
+                    {children}
+                  </h3>
+                ),
+                p: ({ children }) => (
+                  <p className="text-gray-600 mb-4 leading-relaxed">
+                    {children}
+                  </p>
+                ),
+                strong: ({ children }) => (
+                  <strong className="font-semibold text-gray-900">
+                    {children}
+                  </strong>
+                ),
+              }}
+            >
+              {data.description}
+            </ReactMarkdown>
           </motion.div>
         </div>
       </motion.div>

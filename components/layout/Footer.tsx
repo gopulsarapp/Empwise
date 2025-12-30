@@ -7,27 +7,35 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 import Image from "next/image"
 
-/* ================= ANIMATION ================= */
+/* ================= TOP → BOTTOM ANIMATION ================= */
 
-const footerVariants: Variants = {
-  hidden: { opacity: 0, y: -60 },
+const topToBottomVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    y: -50,
+  },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
       duration: 0.8,
       ease: "easeOut",
-      staggerChildren: 0.15,
     },
   },
 }
 
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: -30 },
+const itemTopToBottomVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    y: -30,
+  },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: "easeOut" },
+    transition: {
+      duration: 0.5,
+      ease: "easeOut",
+    },
   },
 }
 
@@ -98,10 +106,10 @@ export default function Footer() {
   return (
     <motion.footer
       className="w-full bg-gradient-to-r from-[#3a264a] to-[#2f203f] text-white"
-      variants={footerVariants}
+      variants={topToBottomVariants}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
+      viewport={{ once: true }}
     >
       {/* MAIN FOOTER */}
       <div className="mx-auto max-w-[1440px] px-6 py-16">
@@ -109,7 +117,7 @@ export default function Footer() {
 
           {/* LOGO */}
           {footerLogo && (
-            <motion.div variants={itemVariants}>
+            <motion.div variants={itemTopToBottomVariants}>
               <Image
                 src={footerLogo}
                 alt={`${data.brandName} logo`}
@@ -123,7 +131,7 @@ export default function Footer() {
 
           {/* SOCIAL ICONS */}
           <motion.div
-            variants={itemVariants}
+            variants={itemTopToBottomVariants}
             className="flex items-center gap-6 md:col-span-2"
           >
             {data.socialmedia.facebook && (
@@ -149,7 +157,7 @@ export default function Footer() {
           {data.footerLegalLink.map((item, index) => (
             <motion.div
               key={index}
-              variants={itemVariants}
+              variants={itemTopToBottomVariants}
               className="text-sm md:text-right"
             >
               <Link href={item.url} className="hover:underline">
@@ -161,7 +169,10 @@ export default function Footer() {
       </div>
 
       {/* BOTTOM BAR */}
-      <motion.div variants={itemVariants} className="border-t border-white/10">
+      <motion.div
+        variants={itemTopToBottomVariants}
+        className="border-t border-white/10"
+      >
         <div className="mx-auto max-w-[1440px] px-6 py-6 text-sm text-white/80">
           © {new Date().getFullYear()} {data.brandName}
         </div>

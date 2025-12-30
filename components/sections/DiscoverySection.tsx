@@ -36,22 +36,20 @@ type ContentfulResponse = {
   }
 }
 
-/* ------------------ Animations ------------------ */
+/* ------------------ Top → Bottom Animation ------------------ */
 
-const containerVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.15 },
+const topToBottomVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    y: -60,
   },
-}
-
-const fadeDownVariants: Variants = {
-  hidden: { opacity: 0, y: -40 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.7, ease: "easeOut" },
+    transition: {
+      duration: 0.8,
+      ease: "easeOut",
+    },
   },
 }
 
@@ -93,75 +91,67 @@ export default function DiscoverySection() {
     fetchDiscovery()
   }, [])
 
-  /* ✅ Hide section completely if no data */
   if (!data) return null
 
   return (
     <motion.section
-      initial={{ opacity: 0, scale: 1.05 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 1.2, ease: "easeOut" }}
+      variants={topToBottomVariants}
+      initial="hidden"
+      whileInView="visible"
       viewport={{ once: true }}
       className="w-full bg-cover bg-center bg-no-repeat py-24"
       style={{ backgroundImage: `url(${data.bgImage})` }}
     >
-      <motion.div
-        className="mx-auto max-w-[1440px] px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-start"
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
-      >
+      <div className="mx-auto max-w-[1440px] px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+        
         {/* Text Box */}
         <motion.div
-          variants={fadeDownVariants}
+          variants={topToBottomVariants}
           className="bg-white p-12 shadow-xl max-w-xl"
         >
           <h2 className="text-3xl md:text-3xl font-bold mb-6 whitespace-pre-line">
             {data.title}
           </h2>
 
-          <p className="text-base text-muted-foreground leading-relaxed whitespace-pre-line">
-
-
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              components={{
-                h3: ({ children }) => (
-                  <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-2">
-                    {children}
-                  </h3>
-                ),
-                p: ({ children }) => (
-                  <p className="mb-4 text-gray-600">
-                    {children}
-                  </p>
-                ),
-                strong: ({ children }) => (
-                  <strong className="font-semibold text-gray-900">
-                    {children}
-                  </strong>
-                ),
-                ul: ({ children }) => (
-                  <ul className="list-disc pl-5 mb-4 space-y-1">
-                    {children}
-                  </ul>
-                ),
-                li: ({ children }) => (
-                  <li className="text-gray-600">
-                    {children}
-                  </li>
-                ),
-              }}
-            >
-              {data.paragraph}
-            </ReactMarkdown>
-          </p>
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            components={{
+              h3: ({ children }) => (
+                <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-2">
+                  {children}
+                </h3>
+              ),
+              p: ({ children }) => (
+                <p className="mb-4 text-gray-600 leading-relaxed">
+                  {children}
+                </p>
+              ),
+              strong: ({ children }) => (
+                <strong className="font-semibold text-gray-900">
+                  {children}
+                </strong>
+              ),
+              ul: ({ children }) => (
+                <ul className="list-disc pl-5 mb-4 space-y-1">
+                  {children}
+                </ul>
+              ),
+              li: ({ children }) => (
+                <li className="text-gray-600">
+                  {children}
+                </li>
+              ),
+            }}
+          >
+            {data.paragraph}
+          </ReactMarkdown>
         </motion.div>
 
-        {/* Form */}
-        <ContactForm />
-      </motion.div>
+        {/* Contact Form */}
+        <motion.div variants={topToBottomVariants}>
+          <ContactForm />
+        </motion.div>
+      </div>
     </motion.section>
   )
 }
