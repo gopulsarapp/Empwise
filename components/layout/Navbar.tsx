@@ -15,7 +15,7 @@ type MenuItem = {
 }
 
 type MenuGroup = {
-  menuName: "solutions" | "industries" | "company"
+  menuName: "solutions" | "industries" 
   menuItems: MenuItem[]
 }
 
