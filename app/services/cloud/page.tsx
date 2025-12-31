@@ -19,7 +19,7 @@ export default function Page() {
               order="left"
               pageName="aBoutPageItArchitecture"
             /> */}
-            <IT_Architecture pageName="cloud" order="right" />
+            <IT_Architecture pageName="cloud" order="left" />
       <DiscoverySection />
     </>
   );

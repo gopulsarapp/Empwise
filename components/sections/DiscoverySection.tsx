@@ -13,7 +13,7 @@ type ContentfulAsset = {
   sys: { id: string }
   fields: {
     file: {
-      url: string
+      url?: string
     }
   }
 }
@@ -22,7 +22,7 @@ type DiscoveryFields = {
   title: string
   paragraph: string
   pageName: string
-  bgImage: {
+  bgImage?: {
     sys: {
       id: string
     }
@@ -59,7 +59,7 @@ export default function DiscoverySection() {
   const [data, setData] = useState<{
     title: string
     paragraph: string
-    bgImage: string
+    bgImage?: string
   } | null>(null)
 
   useEffect(() => {
@@ -72,7 +72,7 @@ export default function DiscoverySection() {
         const item = res.data.items[0]
         if (!item) return
 
-        const assetId = item.fields.bgImage.sys.id
+        const assetId = item.fields.bgImage?.sys.id
         const asset = res.data.includes?.Asset?.find(
           (a) => a.sys.id === assetId
         )
