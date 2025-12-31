@@ -3,7 +3,8 @@
 import HeaderTitle from "@/components/HeaderTitle";
 import HeaderFormSection from "@/components/industries/highly-regulated-industries/HeaderFormSection";
 import DiscoverySection from "@/components/sections/DiscoverySection";
-import IntegrisExperience from "@/components/sections/IntegrisExperience";
+// import IntegrisExperience from "@/components/sections/IntegrisExperience";
+import IT_Architecture from "@/components/sections/IT_Architecture";
 
 export default function Page() {
 
@@ -14,10 +15,11 @@ export default function Page() {
                       contentType="highlyRegulatedIndustriesPageSection"
                       selectPage="services/cloud"
                     />
-      <IntegrisExperience
+      {/* <IntegrisExperience
               order="left"
               pageName="aBoutPageItArchitecture"
-            />
+            /> */}
+            <IT_Architecture pageName="cloud" order="right" />
       <DiscoverySection />
     </>
   );

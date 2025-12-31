@@ -18,13 +18,12 @@ type ExperienceData = {
 interface ExperienceProps {
   order?: "left" | "right"
   pageName: string
-  
 }
 
 type ContentfulResponse = {
   items: Array<{
     fields: {
-      pageName: string
+      pageName?: string
       title: string
       description: string
       bgImage: {
@@ -44,50 +43,34 @@ type ContentfulResponse = {
   }
 }
 
-/* ------------------ TOP → BOTTOM ANIMATIONS ------------------ */
+/* ------------------ Animations ------------------ */
 
 const sectionVariants: Variants = {
-  hidden: {
-    opacity: 0,
-    y: -50,
-  },
+  hidden: { opacity: 0, y: -50 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: {
-      duration: 0.9,
-      ease: "easeOut",
-    },
+    transition: { duration: 0.9, ease: "easeOut" },
   },
 }
 
 const containerVariants: Variants = {
   hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.2,
-    },
-  },
+  visible: { transition: { staggerChildren: 0.2 } },
 }
 
 const itemVariants: Variants = {
-  hidden: {
-    opacity: 0,
-    y: -30,
-  },
+  hidden: { opacity: 0, y: -30 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: {
-      duration: 0.6,
-      ease: "easeOut",
-    },
+    transition: { duration: 0.6, ease: "easeOut" },
   },
 }
 
 /* ------------------ Component ------------------ */
 
-export default function IntegrisExperience({
+export default function IT_Architecture({
   order = "right",
   pageName,
 }: ExperienceProps) {
@@ -97,16 +80,20 @@ export default function IntegrisExperience({
     async function fetchExperience() {
       try {
         const res = await axios.get<ContentfulResponse>(
-          `${process.env.NEXT_PUBLIC_CONTENTFUL_URL}&content_type=${pageName}`
+          `${process.env.NEXT_PUBLIC_CONTENTFUL_URL}&content_type=aBoutPageItArchitecture`
         )
 
-        const entry = res.data.items[0]
+        // ⭐ Find entry by pageName
+        const entry = res.data.items.find(
+          (item) => item.fields.pageName === pageName
+        )
+
         if (!entry) return
 
         const assets = res.data.includes?.Asset ?? []
 
         const bgAsset = assets.find(
-          (a) => a.sys.id === entry.fields.bgImage.sys.id
+          (asset) => asset.sys.id === entry.fields.bgImage.sys.id
         )
 
         if (!bgAsset) return
@@ -160,7 +147,7 @@ export default function IntegrisExperience({
               remarkPlugins={[remarkGfm]}
               components={{
                 h3: ({ children }) => (
-                  <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-2">
+                  <h3 className="text-xl font-semibold mt-6 mb-2">
                     {children}
                   </h3>
                 ),
@@ -168,11 +155,6 @@ export default function IntegrisExperience({
                   <p className="text-gray-600 mb-4 leading-relaxed">
                     {children}
                   </p>
-                ),
-                strong: ({ children }) => (
-                  <strong className="font-semibold text-gray-900">
-                    {children}
-                  </strong>
                 ),
               }}
             >

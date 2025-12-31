@@ -4,9 +4,10 @@ import HeaderTitle from "@/components/HeaderTitle"
 // import ClientRating from "@/components/sections/ClientRating"
 // import ConnectWithTeam from "@/components/ConnectWithTeam"
 // import AdvisoryServices from "@/components/industries/highly-regulated-industries/AdvisoryServices"
-import IntegrisExperience from "@/components/sections/IntegrisExperience"
+// import IntegrisExperience from "@/components/sections/IntegrisExperience"
 // import CommunityBankSolutions from "@/components/CommunityBankSolutions"
 import HeaderFormSection from "@/components/industries/highly-regulated-industries/HeaderFormSection"
+import IT_Architecture from "@/components/sections/IT_Architecture"
 
 export default function Page() {
 
@@ -19,13 +20,11 @@ export default function Page() {
         selectPage="industries/highly-regulated-industries"
       />
 
+      <IT_Architecture pageName="highly-regulated-industries" order="right" />
+
 
       {/* <WhyChooseUs />
       <ClientRating /> */}
-      <IntegrisExperience
-        order="left"
-        pageName="aBoutPageItArchitecture"
-      />
       {/* <CommunityBankSolutions/> */}
       {/* <AdvisoryServices/> */}
       {/* <ConnectWithTeam/> */}
