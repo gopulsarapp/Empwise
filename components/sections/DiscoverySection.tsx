@@ -103,7 +103,7 @@ export default function DiscoverySection() {
   style={
     data?.bgImage
       ? { backgroundImage: `url(${data.bgImage})` }
-      : { backgroundColor: "#313131ff" }
+      : { backgroundColor: "#ffffffff" }
   }
 >
 
