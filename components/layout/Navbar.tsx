@@ -141,7 +141,7 @@ export default function Navbar() {
 
         {/* ================= Desktop Nav ================= */}
         <nav className="hidden md:flex items-center gap-8">
-          {["solutions", "industries", "company"].map((menu) => (
+          {["solutions", "industries"].map((menu) => (
             <div key={menu} className="relative">
               <button
                 onClick={() =>
