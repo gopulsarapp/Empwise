@@ -94,14 +94,19 @@ export default function DiscoverySection() {
   if (!data) return null
 
   return (
-    <motion.section
-      variants={topToBottomVariants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true }}
-      className="w-full bg-cover bg-center bg-no-repeat py-24"
-      style={{ backgroundImage: `url(${data.bgImage})` }}
-    >
+<motion.section
+  variants={topToBottomVariants}
+  initial="hidden"
+  whileInView="visible"
+  viewport={{ once: true }}
+  className="w-full bg-cover bg-center bg-no-repeat py-24"
+  style={
+    data?.bgImage
+      ? { backgroundImage: `url(${data.bgImage})` }
+      : { backgroundColor: "#313131ff" }
+  }
+>
+
       <div className="mx-auto max-w-[1440px] px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
         
         {/* Text Box */}
