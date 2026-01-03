@@ -5,7 +5,8 @@ import axios from "axios"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import ContactForm from "./ContactForm"
+// import ContactForm from "./ContactForm"
+import CallBooking from "./CalBooking"
 
 /* ------------------ Types ------------------ */
 
@@ -117,7 +118,8 @@ export default function ContactSection() {
         </motion.div>
 
         {/* RIGHT FORM */}
-        <ContactForm />
+        {/* <ContactForm /> */}
+        <CallBooking />
       </div>
     </section>
   )
