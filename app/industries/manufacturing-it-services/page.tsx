@@ -1,15 +1,16 @@
-"use client";
-
-// import CommunityBankSolutions from "@/components/CommunityBankSolutions";
 import HeaderTitle from "@/components/HeaderTitle";
 import HeaderFormSection from "@/components/industries/highly-regulated-industries/HeaderFormSection";
 import DiscoverySection from "@/components/sections/DiscoverySection";
-import IntegrisExperience from "@/components/sections/IntegrisExperience";
 import IT_Architecture from "@/components/sections/IT_Architecture";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "IT Services for Manufacturing & Industrial Businesses | Novotek MSP",
+  description:
+    "Novotek provides reliable IT services for manufacturing businesses, supporting operational continuity, secure systems, network reliability, and scalable IT infrastructure.",
+};
 
 export default function Page() {
-
-
   return (
     <>
       <HeaderTitle pageName="manufacturing-it-services" />
@@ -17,13 +18,9 @@ export default function Page() {
         contentType="highlyRegulatedIndustriesPageSection"
         selectPage="industries/manufacturing-it-services"
       />
-      {/* <IntegrisExperience
-        order="left"
-        pageName="aBoutPageItArchitecture"
-      /> */}
       <IT_Architecture pageName="manufacturing-it-services" order="right" />
-      {/* <CommunityBankSolutions/> */}
       <DiscoverySection />
     </>
   );
 }
+{/* <IntegrisExperience order="left" pageName="aBoutPageItArchitecture" /><CommunityBankSolutions/> */}

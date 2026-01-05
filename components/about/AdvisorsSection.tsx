@@ -19,6 +19,10 @@ type Props = {
 /* ================= Component ================= */
 
 export default function AdvisorsSection({ title, people }: Props) {
+
+
+
+  
   if (!people.length) return null
 
   return (
